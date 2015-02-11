@@ -24,7 +24,7 @@
             ; FIXME: regexing url
             [_ parent _] (re-find #"(.*)/([^/]*)$" (.getEntryName jar-url))]
         (util/dbug "Found %s from resources\n" url)
-        [(.toURI url) parent]))))
+        [(.toURI url) parent :resource]))))
 
 ; Source: https://github.com/cljsjs/boot-cljsjs/blob/master/src/cljsjs/impl/webjars.clj
 
@@ -67,11 +67,11 @@
     (relativeSource ^LessSource [^String import-filename]
       (util/dbug "importing %s at %s\n" import-filename parent)
       (if-let [[uri parent type]
-               (or (some-> (or (find-local-file import-filename parent)
-                               ; Don't search from other source-paths if looking for import from resource
-                               (and (= type :file) (some #(find-local-file import-filename %) source-paths))) (conj :file))
-                   (some-> (or (find-resource import-filename parent)
-                               (find-webjars import-filename)) (conj :resource)))]
+               (or (find-local-file import-filename parent)
+                   ; Don't search from other source-paths if looking for import from resource
+                   (and (= type :file) (some #(find-local-file import-filename %) source-paths))
+                   (find-resource import-filename parent)
+                   (find-webjars import-filename))]
         (custom-less-source source-paths type uri parent)
         (not-found!)))
     (getContent ^String []
