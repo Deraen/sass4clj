@@ -62,16 +62,17 @@
     (.toByteArray out)))
 
 (defn custom-less-source
-  [source-paths uri parent]
+  [source-paths type uri parent]
   (proxy [LessSource] []
     (relativeSource ^LessSource [^String import-filename]
       (util/dbug "importing %s at %s\n" import-filename parent)
-      (if-let [[uri parent]
-               (or (find-local-file import-filename parent)
-                   (some #(find-local-file import-filename %) source-paths)
-                   (find-resource import-filename parent)
-                   (find-webjars import-filename))]
-        (custom-less-source source-paths uri parent)
+      (if-let [[uri parent type]
+               (or (some-> (or (find-local-file import-filename parent)
+                               ; Don't search from other source-paths if looking for import from resource
+                               (and (= type :file) (some #(find-local-file import-filename %) source-paths))) (conj :file))
+                   (some-> (or (find-resource import-filename parent)
+                               (find-webjars import-filename)) (conj :resource)))]
+        (custom-less-source source-paths type uri parent)
         (not-found!)))
     (getContent ^String []
       (try
@@ -108,7 +109,7 @@
     (try
       (let [result (-> (DefaultLessCompiler.)
                        (.compile
-                         (custom-less-source source-paths (.toURI input-file) (.getParent input-file))
+                         (custom-less-source source-paths :file (.toURI input-file) (.getParent input-file))
                          (build-configuration options)))]
         (spit output-file (.getCss result))
         (when source-map (spit source-map-output (.getSourceMap result)))
