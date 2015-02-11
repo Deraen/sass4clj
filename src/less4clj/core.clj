@@ -62,15 +62,16 @@
     (.toByteArray out)))
 
 (defn custom-less-source
-  [uri parent]
+  [source-paths uri parent]
   (proxy [LessSource] []
     (relativeSource ^LessSource [^String import-filename]
       (util/dbug "importing %s at %s\n" import-filename parent)
       (if-let [[uri parent]
                (or (find-local-file import-filename parent)
+                   (some #(find-local-file import-filename %) source-paths)
                    (find-resource import-filename parent)
                    (find-webjars import-filename))]
-        (custom-less-source uri parent)
+        (custom-less-source source-paths uri parent)
         (not-found!)))
     (getContent ^String []
       (try
@@ -99,7 +100,7 @@
       (.setIncludeSourcesContent true))
     config))
 
-(defn less-compile [path target-dir relative-path {:keys [source-map] :as options}]
+(defn less-compile [path target-dir relative-path {:keys [source-map source-paths] :as options}]
   (let [input-file (io/file path)
         output-file (io/file target-dir (string/replace relative-path #"\.main\.less$" ".css"))
         source-map-output (io/file target-dir (string/replace relative-path #"\.main\.less$" ".main.css.map"))]
@@ -107,7 +108,7 @@
     (try
       (let [result (-> (DefaultLessCompiler.)
                        (.compile
-                         (custom-less-source (.toURI input-file) (.getParent input-file))
+                         (custom-less-source source-paths (.toURI input-file) (.getParent input-file))
                          (build-configuration options)))]
         (spit output-file (.getCss result))
         (when source-map (spit source-map-output (.getSourceMap result)))
