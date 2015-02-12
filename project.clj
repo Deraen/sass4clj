@@ -1,4 +1,4 @@
-(defproject deraen/less4clj "0.1.1-SNAPSHOT"
+(defproject deraen/less4clj "0.1.2-SNAPSHOT"
   :description "Wrapper for Less4j"
   :url "https://github.com/deraen/less4clj"
   :license {:name "Eclipse Public License"
