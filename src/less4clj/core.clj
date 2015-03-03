@@ -2,11 +2,11 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as string]
-    [less4clj.util :as util])
+    [less4clj.util :as util]
+    [less4clj.webjars :as webjars])
   (:import
     [java.io IOException]
     [java.net JarURLConnection URL URI]
-    [org.webjars WebJarAssetLocator]
     [com.github.sommeri.less4j
      LessCompiler LessCompiler$Configuration Less4jException
      LessSource LessSource$FileNotFound LessSource$CannotReadFile LessSource$StringSourceException]
@@ -26,24 +26,8 @@
         (util/dbug "Found %s from resources\n" url)
         [(.toURI url) parent :resource]))))
 
-; Source: https://github.com/cljsjs/boot-cljsjs/blob/master/src/cljsjs/impl/webjars.clj
-
-(def ^:private webjars-pattern
-  #"META-INF/resources/webjars/([^/]+)/([^/]+)/(.*)")
-
-(defn- asset-path [resource]
-  (let [[_ name version path] (re-matches webjars-pattern resource)]
-    ; FIXME:
-    (str name "/" path)))
-
-; FIXME: Singleton? :<
-(def ^:private asset-map
-  (delay (->> (.listAssets (WebJarAssetLocator.) "")
-              (map (juxt asset-path identity))
-              (into {}))))
-
-(defn find-webjars [file]
-  (if-let [path (get @asset-map file)]
+(defn find-webjars [ctx file]
+  (if-let [path (get (:asset-map ctx) file)]
     (do
       (util/dbug "found %s at webjars\n" path)
       (find-resource path nil))))
@@ -62,17 +46,17 @@
     (.toByteArray out)))
 
 (defn custom-less-source
-  [source-paths type uri parent]
+  [ctx type uri parent]
   (proxy [LessSource] []
     (relativeSource ^LessSource [^String import-filename]
       (util/dbug "importing %s at %s\n" import-filename parent)
       (if-let [[uri parent type]
                (or (find-local-file import-filename parent)
                    ; Don't search from other source-paths if looking for import from resource
-                   (and (= type :file) (some #(find-local-file import-filename %) source-paths))
+                   (and (= type :file) (some #(find-local-file import-filename %) (:source-paths ctx)))
                    (find-resource import-filename parent)
-                   (find-webjars import-filename))]
-        (custom-less-source source-paths type uri parent)
+                   (find-webjars ctx import-filename))]
+        (custom-less-source ctx type uri parent)
         (not-found!)))
     (getContent ^String []
       (try
@@ -107,9 +91,11 @@
         source-map-output (io/file target-dir (string/replace relative-path #"\.main\.less$" ".main.css.map"))]
     (io/make-parents output-file)
     (try
-      (let [result (-> (DefaultLessCompiler.)
+      (let [ctx {:source-paths source-paths
+                 :asset-map (webjars/asset-map)}
+            result (-> (DefaultLessCompiler.)
                        (.compile
-                         (custom-less-source source-paths :file (.toURI input-file) (.getParent input-file))
+                         (custom-less-source ctx :file (.toURI input-file) (.getParent input-file))
                          (build-configuration options)))]
         (spit output-file (.getCss result))
         (when source-map (spit source-map-output (.getSourceMap result)))
