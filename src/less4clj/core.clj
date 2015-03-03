@@ -2,7 +2,7 @@
   (:require
     [clojure.java.io :as io]
     [clojure.string :as string]
-    [boot.util :as util])
+    [less4clj.util :as util])
   (:import
     [java.io IOException]
     [java.net JarURLConnection URL URI]

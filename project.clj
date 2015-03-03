@@ -8,6 +8,4 @@
   :dependencies [[org.clojure/clojure "1.6.0" :scope "provided"]
                  [org.webjars/webjars-locator "0.19"]
                  [org.slf4j/slf4j-nop "1.7.7"]
-                 [com.github.sommeri/less4j "1.8.5"]
-                 ; FIXME:
-                 [boot/pod "2.0.0-rc8"]])
+                 [com.github.sommeri/less4j "1.9.0"]])
