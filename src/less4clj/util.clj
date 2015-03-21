@@ -12,7 +12,7 @@
     ; Deref var and atom
     @@(resolve 'boot.util/*verbosity*)
     (catch Exception _
-      0)))
+      1)))
 
 (defn- print*
   [verbosity args]
