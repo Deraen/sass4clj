@@ -3,13 +3,23 @@
             [less4clj.core :refer :all])
   (:import [java.io File]))
 
-(def test-file (File/createTempFile "less4clj" "test.less"))
-(spit test-file "@test: #fff;
-                 a { color: @test;}")
+(def less
+"@test: #fff;
+ @import \"foo.less\";
+ a { color: @test;}")
 
-(deftest less-compile-test
-  (is (= "a {
+(def css
+"h1 {
+  font-size: 12px;
+}
+a {
   color: #fff;
 }
-"
-         (:output (less-compile test-file {})))))
+")
+
+(def test-file (File/createTempFile "less4clj" "test.less"))
+(spit test-file less)
+
+(deftest less-compile-test
+  (is (= {:output css :source-map nil} (less-compile test-file {})))
+  (is (= {:output css :source-map nil} (less-compile less {}))))

@@ -3,6 +3,7 @@
 - *BREAKING CHANGE*: `less-compile` now returns a map with
   resulting css and source-map as strings
 - `less-compile-to-file` creates output files
+- `less-compile` input can be either File or String (used as Less source)
 
 ## 0.2.1 (21.3.2015)
 

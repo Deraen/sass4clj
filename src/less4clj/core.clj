@@ -17,12 +17,23 @@
     (if (.exists f)
       [(.toURI f) (.getParent f) :file])))
 
-(defn find-resource [file current-dir]
-  (when-let [url (or (io/resource file) (io/resource (str current-dir "/" file)))]
-    (if (= (.getProtocol url) "jar")
+(defn- url-parent [url]
+  (let [[_ x] (re-find #"(.*)/([^/]*)$" url)]
+    (println url x)
+    x))
+
+(defn- join-url [& parts]
+  (string/join "/" parts))
+
+(defn find-resource [url]
+  (if url
+    (case (.getProtocol url)
+      "file"
+      [(.toURI url) (url-parent (str url)) :resource]
+
+      "jar"
       (let [jar-url (.openConnection url)
-            ; FIXME: regexing url
-            [_ parent _] (re-find #"(.*)/([^/]*)$" (.getEntryName jar-url))]
+            parent (url-parent (.getEntryName jar-url))]
         (util/dbug "Found %s from resources\n" url)
         [(.toURI url) parent :resource]))))
 
@@ -54,7 +65,8 @@
                (or (find-local-file import-filename parent)
                    ; Don't search from other source-paths if looking for import from resource
                    (and (= type :file) (some #(find-local-file import-filename %) (:source-paths ctx)))
-                   (find-resource import-filename parent)
+                   (find-resource (io/resource import-filename))
+                   (find-resource (io/resource (join-url parent import-filename)))
                    (find-webjars ctx import-filename))]
         (custom-less-source ctx type uri parent)
         (not-found!)))
@@ -74,6 +86,22 @@
       (let [[_ name] (re-find #"([^/]*)$" (.toString uri))]
         name))))
 
+(defn inline-less-source
+  [ctx source]
+  (proxy [LessSource] []
+    (relativeSource ^LessSource [^String import-filename]
+      (util/dbug "importing %s at inline less\n")
+      (if-let [[uri parent type]
+               (or (some #(find-local-file import-filename %) (:source-paths ctx))
+                   (find-resource (io/resource import-filename))
+                   (find-webjars ctx import-filename))]
+        (custom-less-source ctx type uri parent)
+        (not-found!)))
+    (getContent ^String []
+      source)
+    (getBytes ^bytes []
+      (.getBytes source))))
+
 (defn- build-configuration ^LessCompiler$Configuration
   [{:keys [source-map compression]}]
   (let [config (LessCompiler$Configuration.)
@@ -90,9 +118,13 @@
 (defmethod ->less-source File [ctx file]
   (custom-less-source ctx :file (.toURI file) (.getParent file)))
 
+(defmethod ->less-source String [ctx source]
+  (inline-less-source ctx source))
+
 (defn less-compile
   "Input can be:
-   - File"
+   - File
+   - String"
   [input {:keys [source-map source-paths] :as options}]
   (try
     (let [ctx {:source-paths source-paths
@@ -107,14 +139,14 @@
        :source-map (if source-map (.getSourceMap result))})
     (catch Less4jException e
       (util/fail (.getMessage e))
-      nil)))
+      {:error e})))
 
 (defn less-compile-to-file [path target-dir relative-path options]
   (let [input-file (io/file path)
         output-file (io/file target-dir (string/replace relative-path #"\.main\.less$" ".css"))
         source-map-output (io/file target-dir (string/replace relative-path #"\.main\.less$" ".main.css.map"))
-        {:keys [output source-map] :as result} (less-compile input-file options)]
-    (when result
+        {:keys [output source-map]} (less-compile input-file options)]
+    (when output
       (io/make-parents output-file)
       (spit output-file output)
       (when source-map (spit source-map-output source-map)))))
