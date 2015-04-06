@@ -6,7 +6,7 @@
             :distribution :repo
             :comments "same as Clojure"}
   :dependencies [[org.clojure/clojure "1.6.0" :scope "provided"]
-                 [com.github.sommeri/less4j "1.9.0"]
+                 [com.github.sommeri/less4j "1.10.0"]
 
                  ; For testing the webjars asset locator implementation
                  [org.webjars/bootstrap "3.3.2" :scope "test"]
