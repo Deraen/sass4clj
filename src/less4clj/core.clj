@@ -5,7 +5,7 @@
     [less4clj.util :as util]
     [less4clj.webjars :as webjars])
   (:import
-    [java.io IOException]
+    [java.io IOException File]
     [java.net JarURLConnection URL URI]
     [com.github.sommeri.less4j
      LessCompiler LessCompiler$Configuration Less4jException
@@ -85,21 +85,36 @@
       (.setIncludeSourcesContent true))
     config))
 
-(defn less-compile [path target-dir relative-path {:keys [source-map source-paths] :as options}]
+(defmulti ->less-source (fn [_ x] (class x)))
+
+(defmethod ->less-source File [ctx file]
+  (custom-less-source ctx :file (.toURI file) (.getParent file)))
+
+(defn less-compile
+  "Input can be:
+   - File"
+  [input {:keys [source-map source-paths] :as options}]
+  (try
+    (let [ctx {:source-paths source-paths
+               :asset-map (webjars/asset-map)}
+          result (-> (DefaultLessCompiler.)
+                     (.compile
+                       (->less-source ctx input)
+                       (build-configuration options)))]
+      (doseq [warn (.getWarnings result)]
+        (util/warn "WARNING: %s\n" (.getMessage warn)))
+      {:output (.getCss result)
+       :source-map (if source-map (.getSourceMap result))})
+    (catch Less4jException e
+      (util/fail (.getMessage e))
+      nil)))
+
+(defn less-compile-to-file [path target-dir relative-path options]
   (let [input-file (io/file path)
         output-file (io/file target-dir (string/replace relative-path #"\.main\.less$" ".css"))
-        source-map-output (io/file target-dir (string/replace relative-path #"\.main\.less$" ".main.css.map"))]
-    (io/make-parents output-file)
-    (try
-      (let [ctx {:source-paths source-paths
-                 :asset-map (webjars/asset-map)}
-            result (-> (DefaultLessCompiler.)
-                       (.compile
-                         (custom-less-source ctx :file (.toURI input-file) (.getParent input-file))
-                         (build-configuration options)))]
-        (spit output-file (.getCss result))
-        (when source-map (spit source-map-output (.getSourceMap result)))
-        (doseq [warn (.getWarnings result)]
-          (util/warn "WARNING: %s\n" (.getMessage warn))))
-      (catch Less4jException e
-        (util/fail (.getMessage e))))))
+        source-map-output (io/file target-dir (string/replace relative-path #"\.main\.less$" ".main.css.map"))
+        {:keys [output source-map] :as result} (less-compile input-file options)]
+    (when result
+      (io/make-parents output-file)
+      (spit output-file output)
+      (when source-map (spit source-map-output source-map)))))

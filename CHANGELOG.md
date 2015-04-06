@@ -1,3 +1,9 @@
+## 0.3.0 (x.4.2015)
+
+- *BREAKING CHANGE*: `less-compile` now returns a map with
+  resulting css and source-map as strings
+- `less-compile-to-file` creates output files
+
 ## 0.2.1 (21.3.2015)
 
 - Fixed error logging for non boot use
