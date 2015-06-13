@@ -23,3 +23,6 @@ a {
 (deftest less-compile-test
   (is (= {:output css :source-map nil} (less-compile test-file {})))
   (is (= {:output css :source-map nil} (less-compile less {}))))
+
+(deftest import-werbjars
+  (is (less-compile "@import \"bootstrap/less/bootstrap.less\";" {})))

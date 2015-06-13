@@ -19,7 +19,6 @@
 
 (defn- url-parent [url]
   (let [[_ x] (re-find #"(.*)/([^/]*)$" url)]
-    (println url x)
     x))
 
 (defn- join-url [& parts]
@@ -41,7 +40,7 @@
   (if-let [path (get (:asset-map ctx) file)]
     (do
       (util/dbug "found %s at webjars\n" path)
-      (find-resource path nil))))
+      (find-resource (io/resource path)))))
 
 (defn- not-found! []
   (throw (LessSource$FileNotFound.)))
