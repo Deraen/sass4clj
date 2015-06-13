@@ -1,4 +1,4 @@
-(defproject deraen/less4clj "0.3.0-SNAPSHOT"
+(defproject deraen/less4clj "0.3.0"
   :description "Wrapper for Less4j"
   :url "https://github.com/deraen/less4clj"
   :license {:name "Eclipse Public License"
@@ -6,7 +6,7 @@
             :distribution :repo
             :comments "same as Clojure"}
   :dependencies [[org.clojure/clojure "1.6.0" :scope "provided"]
-                 [com.github.sommeri/less4j "1.10.0"]
+                 [com.github.sommeri/less4j "1.12.0"]
 
                  ; For testing the webjars asset locator implementation
                  [org.webjars/bootstrap "3.3.2" :scope "test"]

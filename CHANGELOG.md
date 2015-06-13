@@ -1,9 +1,10 @@
-## 0.3.0 (x.4.2015)
+## 0.3.0 (13.6.2015)
 
+- Update less4j to 1.12.0
 - *BREAKING CHANGE*: `less-compile` now returns a map with
   resulting css and source-map as strings
 - `less-compile-to-file` creates output files
-- `less-compile` input can be either File or String (used as Less source)
+- `less-compile` input can be either a File or String (used as Less source)
 
 ## 0.2.1 (21.3.2015)
 
