@@ -7,18 +7,18 @@
   (:import
     [java.io IOException File]
     [java.net JarURLConnection URL URI]
-    [com.cathive.sass SassCompilationException SassContext SassFileContext
-     SassOptions SassOutputStyle]
-    [java.nio.file Path]))
+    [java.util Collection Collections]
+    [io.bit3.jsass CompilationException Options Output OutputStyle]
+    [io.bit3.jsass.importer Import Importer]))
 
 (defn find-local-file [file current-dir]
   (let [f (io/file current-dir file)]
     (if (.exists f)
-      [(.toURI f) (.getParent f) :file])))
+      [(.getName f) (.getParent f)])))
 
 (defn- url-parent [url]
-  (let [[_ x] (re-find #"(.*)/([^/]*)$" url)]
-    x))
+  (let [[_ base name] (re-find #"(.*)/([^/]*)$" url)]
+    [base (str base "/" name) :file]))
 
 (defn- join-url [& parts]
   (string/join "/" parts))
@@ -27,97 +27,93 @@
   (if url
     (case (.getProtocol url)
       "file"
-      [(.toURI url) (url-parent (str url)) :resource]
+      (let [[base name] (url-parent (str url))]
+        [base name :resource url])
 
       "jar"
       (let [jar-url (.openConnection url)
-            parent (url-parent (.getEntryName jar-url))]
+            [base name] (url-parent (.getEntryName jar-url))]
         (util/dbug "Found %s from resources\n" url)
-        [(.toURI url) parent :resource]))))
+        [base name :resource url]))))
 
 (defn find-webjars [ctx file]
-  (if-let [path (get (:asset-map ctx) file)]
-    (do
-      (util/dbug "found %s at webjars\n" path)
-      (find-resource (io/resource path)))))
+  (when-let [path (get (:asset-map ctx) file)]
+    (util/dbug "found %s at webjars\n" path)
+    (find-resource (io/resource path))))
 
-; (defn- not-found! []
-;   (throw (LessSource$FileNotFound.)))
+(defn add-ext [name]
+  (if (.endsWith name ".scss")
+    name
+    (str name ".scss")))
 
-; (defn- cant-read! []
-;   (throw (LessSource$CannotReadFile.)))
+(defn add-underscore [url]
+  (let [parts (string/split url #"/")]
+    (string/join "/" (conj (vec (butlast parts)) (str "_" (last parts))))))
 
-(defn- slurp-bytes
-  "Slurp the bytes from a slurpable thing"
-  [x]
-  (with-open [out (java.io.ByteArrayOutputStream.)]
-    (io/copy (io/input-stream x) out)
-    (.toByteArray out)))
+(defn custom-sass-importer [ctx]
+  (reify
+    Importer
+    (^Collection apply [this ^String url ^Import prev]
+      ; (println "import" url)
+      ; (util/info "Import: %s\n" url)
+      ; (util/info "Prev name: %s base: %s\n" (.getUri prev) (.getBase prev))
+      (let [url (add-ext url)
+            [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getUri prev)))]
+        ; (util/info "Parent: %s\n" parent)
+        (when-let [[base name type uri]
+                   (or (find-local-file (add-underscore url) parent)
+                       (find-local-file url parent)
+                       (find-resource (io/resource (add-underscore url)))
+                       (find-resource (io/resource url))
+                       (find-resource (io/resource (add-underscore (join-url parent url))))
+                       (find-resource (io/resource (join-url parent url)))
+                       (find-webjars ctx (add-underscore url))
+                       (find-webjars ctx url))]
+          ; (util/info "Found base: %s name: %s\n" base name)
+          ; jsass doesn't know how to read content from other than files?
+          (Collections/singletonList
+            (if (= :resource type)
+              (Import. name base (slurp uri))
+              (Import. name base))))))))
 
-; (defn custom-sass-source
-;   [ctx type uri parent]
-;   (proxy [LessSource] []
-;     (relativeSource ^LessSource [^String import-filename]
-;       (util/dbug "importing %s at %s\n" import-filename parent)
-;       (if-let [[uri parent type]
-;                (or (find-local-file import-filename parent)
-;                    ; Don't search from other source-paths if looking for import from resource
-;                    (and (= type :file) (some #(find-local-file import-filename %) (:source-paths ctx)))
-;                    (find-resource (io/resource import-filename))
-;                    (find-resource (io/resource (join-url parent import-filename)))
-;                    (find-webjars ctx import-filename))]
-;         (custom-sass-source ctx type uri parent)
-;         (not-found!)))
-;     (getContent ^String []
-;       (try
-;         (slurp uri)
-;         (catch Exception _
-;           (cant-read!))))
-;     (getBytes ^bytes []
-;       (try
-;         (slurp-bytes uri)
-;         (catch IOException e
-;           (cant-read!))))
-;     (getURI ^URI []
-;       uri)
-;     (getName ^String []
-;       (let [[_ name] (re-find #"([^/]*)$" (.toString uri))]
-;         name))))
+(def ^:private output-styles
+  {:nested OutputStyle/NESTED
+   :compact OutputStyle/COMPACT
+   :expanded OutputStyle/EXPANDED
+   :compressed OutputStyle/COMPRESSED})
 
-; (defn inline-sass-source
-;   [ctx source]
-;   (proxy [LessSource] []
-;     (relativeSource ^LessSource [^String import-filename]
-;       (util/dbug "importing %s at inline sass\n")
-;       (if-let [[uri parent type]
-;                (or (some #(find-local-file import-filename %) (:source-paths ctx))
-;                    (find-resource (io/resource import-filename))
-;                    (find-webjars ctx import-filename))]
-;         (custom-sass-source ctx type uri parent)
-;         (not-found!)))
-;     (getContent ^String []
-;       source)
-;     (getBytes ^bytes []
-;       (.getBytes source))))
-
-(defn- set-options
-  [ctx {:keys [source-paths source-map compression]}]
-  (doto (.getOptions ctx)
-    (.setIncludePaths (make-array Path (map #(.toPath %) source-paths)))))
+(defn- build-options
+  [{:keys [source-paths output-style]}]
+  (let [opts (Options.)
+        include-paths (.getIncludePaths opts)]
+    (doseq [source-path source-paths]
+      (.add include-paths (io/file source-path)))
+    (when output-style
+      (.setOutputStyle opts (get output-styles output-style)))
+    opts))
 
 (defn sass-compile
   "Input can be:
+   - String
    - File"
-  [input {:keys [source-map source-paths] :as options}]
-  (try
-    (let [ctx (SassFileContext/create (.toPath input))
-          _ (set-options ctx options)
-          ; TODO: Use streams in API
-          out (java.io.ByteArrayOutputStream.)
-          _ (.compile out)
-          result (str out)]
-      {:output result
-       :source-map nil})
-    (catch SassCompilationException e
-      (util/fail (.getMessage e))
-      {:error e})))
+  [input {:keys [verbosity]
+          :or {verbosity 1}
+          :as options}]
+  (binding [util/*verbosity* verbosity]
+    (try
+      (let [ctx {:asset-map (webjars/asset-map)}
+            compiler (io.bit3.jsass.Compiler.)
+            opts (build-options options)
+            _ (doto (.getImporters opts)
+                (.add (custom-sass-importer ctx)))
+            output (if (string? input)
+                     (.compileString compiler input opts)
+                     (.compileFile compiler (.toURI (io/file input)) nil opts))]
+        ; TODO: .getErrorJson could be useful
+        (when-not (zero? (.getErrorStatus output))
+          (util/fail (.getErrorMessage output)))
+        {:output (.getCss output)
+         :source-map (.getSourceMap output)})
+      (catch CompilationException e
+        (util/fail (.getMessage e))
+        {:error e}))))
