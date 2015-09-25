@@ -117,3 +117,13 @@
       (catch CompilationException e
         (util/fail (.getMessage e))
         {:error e}))))
+
+(defn sass-compile-to-file [path target-dir relative-path options]
+  (let [input-file (io/file path)
+        output-file (io/file target-dir (string/replace relative-path #"\.scss$" ".css"))
+        source-map-output (io/file target-dir (string/replace relative-path #"\.scss$" ".main.css.map"))
+        {:keys [output source-map]} (sass-compile input-file options)]
+    (when output
+      (io/make-parents output-file)
+      (spit output-file output)
+      (when source-map (spit source-map-output source-map)))))
