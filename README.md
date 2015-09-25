@@ -1,37 +1,25 @@
-# Less4clj
-[![Clojars Project](http://clojars.org/deraen/less4clj/latest-version.svg)](http://clojars.org/deraen/less4clj)
+# Sass4clj
+[![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)
 
-Clojure wrapper for [Less4j](https://github.com/SomMeri/less4j) Java implementation of Less compiler
+Clojure wrapper for [sass-java](https://github.com/cathive/sass-java) JNA wrapper
+for Libsass.
 
 ## Usage
 
-Check [boot-less](https://github.com/Deraen/boot-less) and
-[lein-less4j](https://github.com/Deraen/lein-less4j).
+Check ...
 
 ## Features
 
 - Load imports from classpath
   - Loading order. `@import "{name}";` at `{path}`.
-    1. check if file `{path}/{name}.less` exists
-    2. try `(io/resource "{name}.less")`
-    3. try `(io/resource "{path}/{name}.less")`
+    1. check if file `{path}/{name}.sass` exists
+    2. try `(io/resource "{name}.sass")`
+    3. try `(io/resource "{path}/{name}.sass")`
     4. check if webjars asset map contains `{name}`
       - Resource `META-INF/resources/webjars/{package}/{version}/{path}` can be referred using `{package}/{path}`
-      - E.g. `bootstrap/less/bootstrap.less` => `META-INF/resources/webjars/bootstrap/3.3.1/less/bootstrap.less`
+      - E.g. `bootstrap/sass/bootstrap.scss` => `META-INF/resources/webjars/bootstrap/4.0.0-alpha/scss/bootstrap.scss`
   - You should be able to depend on `[org.webjars/bootstrap "3.3.1"]`
-    and use `@import "bootstrap/less/bootstrap";`
-
-## FAQ
-
-### Log configuration
-
-If you are using some logging stuff it might be that library used by
-less4j will write lots of stuff to your log, then you should add the following
-rule to your `logback.xml`:
-
-```xml
-  <logger name="org.apache.commons.beanutils.converters" level="INFO"/>
-```
+    and use `@import "bootstrap/sass/bootstrap";`
 
 ## License
 

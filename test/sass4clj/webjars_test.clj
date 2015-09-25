@@ -1,6 +1,6 @@
-(ns less4clj.webjars-test
+(ns sass4clj.webjars-test
   (:require [clojure.test :refer :all]
-            [less4clj.webjars :as webjars])
+            [sass4clj.webjars :as webjars])
   (:import [org.webjars WebJarAssetLocator]))
 
 (deftest list-assets-test

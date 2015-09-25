@@ -1,4 +1,4 @@
-(ns less4clj.webjars
+(ns sass4clj.webjars
   (:require [clojure.string :as string]
             [clojure.java.io :as io])
   (:import [java.io IOException File]
@@ -22,7 +22,7 @@
                       (remove #(.isDirectory %))
                       (map #(.getName %))
                       (filter #(.startsWith % WEBJARS_PATH_PREFIX))))
-               :else (throw (Exception. (str "less4clj.webjars doesn't know how to handle \"" (.getProtocol url) "\" urls"))))))
+               :else (throw (Exception. (str "sass4clj.webjars doesn't know how to handle \"" (.getProtocol url) "\" urls"))))))
          [])
        set))
 

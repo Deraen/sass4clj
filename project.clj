@@ -1,15 +1,15 @@
-(defproject deraen/less4clj "0.3.2"
-  :description "Wrapper for Less4j"
-  :url "https://github.com/deraen/less4clj"
+(defproject deraen/sass4clj "0.1.0-SNAPSHOT"
+  :description "Wrapper for sass-java"
+  :url "https://github.com/deraen/sass4clj"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
             :comments "same as Clojure"}
   :dependencies [[org.clojure/clojure "1.6.0" :scope "provided"]
-                 [com.github.sommeri/less4j "1.14.0"]
+                 [com.cathive.sass/sass-java "3.2.5.0"]
 
                  ; For testing the webjars asset locator implementation
-                 [org.webjars/bootstrap "3.3.2" :scope "test"]
+                 [org.webjars.bower/bootstrap "4.0.0-alpha" :exclusions [org.webjars.bower/jquery] :scope "test"]
                  [org.webjars/webjars-locator "0.19" :scope "test"]
                  [org.slf4j/slf4j-nop "1.7.7" :scope "test"]]
   :profiles {:dev {:dependencies []

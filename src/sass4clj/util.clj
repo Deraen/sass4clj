@@ -1,4 +1,4 @@
-(ns less4clj.util)
+(ns sass4clj.util)
 
 ;;
 ;; Debugging
