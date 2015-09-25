@@ -3,14 +3,6 @@
             [sass4clj.core :refer :all])
   (:import [java.io File]))
 
-(deftest generate-names-test
-  (is (= ["_variables.scss" "variables.scss"]
-         (generate-names "variables")))
-  (is (= ["_variables.scss" "variables.scss"]
-         (generate-names "variables.scss")))
-  (is (= ["mixins/_variables.scss" "mixins/variables.scss"]
-         (generate-names "mixins/breakpoints"))) )
-
 (def sass
 "$test: #fff;
 @import \"foo.scss\";

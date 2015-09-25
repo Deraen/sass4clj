@@ -6,7 +6,7 @@
             :distribution :repo
             :comments "same as Clojure"}
   :dependencies [[org.clojure/clojure "1.6.0" :scope "provided"]
-                 [io.bit3/jsass "3.3.1" :native-prefix "linux-x86-64/"]
+                 [io.bit3/jsass "3.3.1"]
 
                  ; For testing the webjars asset locator implementation
                  [org.webjars.bower/bootstrap "4.0.0-alpha" :exclusions [org.webjars.bower/jquery] :scope "test"]
