@@ -6,7 +6,7 @@ for Libsass.
 
 ## Usage
 
-Check ...
+Check [boot-sass](https://github.com/Deraen/boot-sass) and [lein-sass4clj](https://github.com/Deraen/lein-sass4clj).
 
 ## Features
 
