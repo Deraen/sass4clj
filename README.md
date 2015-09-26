@@ -1,8 +1,7 @@
 # Sass4clj
 [![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)
 
-Clojure wrapper for [sass-java](https://github.com/cathive/sass-java) JNA wrapper
-for Libsass.
+Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
 
 ## Usage
 
