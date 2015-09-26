@@ -118,10 +118,16 @@
         (util/fail (.getMessage e))
         {:error e}))))
 
-(defn sass-compile-to-file [path target-dir relative-path options]
-  (let [input-file (io/file path)
-        output-file (io/file target-dir (string/replace relative-path #"\.scss$" ".css"))
-        source-map-output (io/file target-dir (string/replace relative-path #"\.scss$" ".main.css.map"))
+(defn sass-compile-to-file
+  "Arguments:
+   - input-path - Path to the input file
+   - output-path - Path to the output file, possible to source map will be
+     written to same path with `.map` appended
+   - options"
+  [input-path output-path options]
+  (let [input-file (io/file input-path)
+        output-file (io/file output-path)
+        source-map-output (io/file (str output-path ".map"))
         {:keys [output source-map]} (sass-compile input-file options)]
     (when output
       (io/make-parents output-file)
