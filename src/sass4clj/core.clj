@@ -83,19 +83,26 @@
    :compressed OutputStyle/COMPRESSED})
 
 (defn- build-options
-  [{:keys [source-paths output-style]}]
+  [{:keys [source-paths output-style source-map-path]}]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
     (doseq [source-path source-paths]
       (.add include-paths (io/file source-path)))
     (when output-style
       (.setOutputStyle opts (get output-styles output-style)))
+    (when source-map-path
+      (.setSourceMapRoot opts (URI. ""))
+      (.setSourceMapFile opts (URI. source-map-path)))
     opts))
 
 (defn sass-compile
   "Input can be:
    - String
-   - File"
+   - File
+
+   Options:
+   - :source-map-path - Enables source-maps and uses this URL for
+     sourceMappingURL. Relative to css file."
   [input {:keys [verbosity]
           :or {verbosity 1}
           :as options}]
@@ -108,7 +115,7 @@
                 (.add (custom-sass-importer ctx)))
             output (if (string? input)
                      (.compileString compiler input opts)
-                     (.compileFile compiler (.toURI (io/file input)) nil opts))]
+                     (.compileFile compiler (.toURI input) nil opts))]
         ; TODO: .getErrorJson could be useful
         (when-not (zero? (.getErrorStatus output))
           (util/fail (.getErrorMessage output)))
@@ -123,12 +130,16 @@
    - input-path - Path to the input file
    - output-path - Path to the output file, possible to source map will be
      written to same path with `.map` appended
-   - options"
-  [input-path output-path options]
+   - options
+
+   Options:
+   - :source-map - Enables source-maps and sets URI using output-path."
+  [input-path output-path {:keys [source-map] :as options}]
   (let [input-file (io/file input-path)
         output-file (io/file output-path)
+        source-map-name (if source-map (str output-path ".map"))
         source-map-output (io/file (str output-path ".map"))
-        {:keys [output source-map]} (sass-compile input-file options)]
+        {:keys [output source-map]} (sass-compile input-file (assoc options :source-map-path source-map-name))]
     (when output
       (io/make-parents output-file)
       (spit output-file output)

@@ -1,4 +1,4 @@
-(defproject deraen/sass4clj "0.1.0-SNAPSHOT"
+(defproject deraen/sass4clj "0.1.0"
   :description "Wrapper for sass-java"
   :url "https://github.com/deraen/sass4clj"
   :license {:name "Eclipse Public License"
