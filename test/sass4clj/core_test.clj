@@ -19,9 +19,13 @@ a {
 (def test-file (File/createTempFile "sass4clj" "test.scss"))
 (spit test-file sass)
 
+(def local-test-file (File/createTempFile "sass4clj" "local.scss"))
+(spit local-test-file (str "@import \"" (.getName test-file) "\";"))
+
 (deftest sass-compile-test
   (is (= {:output css :source-map nil} (sass-compile test-file {})))
-  (is (= {:output css :source-map nil} (sass-compile sass {}))))
+  (is (= {:output css :source-map nil} (sass-compile sass {})))
+  (is (= {:output css :source-map nil} (sass-compile local-test-file {}))))
 
 (deftest import-werbjars
   (is (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3})))
