@@ -14,7 +14,7 @@
 (defn find-local-file [file current-dir]
   (let [f (io/file current-dir file)]
     (if (.exists f)
-      [(.getName f) (.getParent f)])))
+      [(.getParent f) (.getName f) f])))
 
 (defn- url-parent [url]
   (let [[_ base name] (re-find #"(.*)/([^/]*)$" url)]
@@ -28,13 +28,13 @@
     (case (.getProtocol url)
       "file"
       (let [[base name] (url-parent (str url))]
-        [base name :resource url])
+        [base name url])
 
       "jar"
       (let [jar-url (.openConnection url)
             [base name] (url-parent (.getEntryName jar-url))]
         (util/dbug "Found %s from resources\n" url)
-        [base name :resource url]))))
+        [base name url]))))
 
 (defn find-webjars [ctx file]
   (when-let [path (get (:asset-map ctx) file)]
@@ -60,7 +60,7 @@
       (let [url (add-ext url)
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getUri prev)))]
         ; (util/info "Parent: %s\n" parent)
-        (when-let [[base name type uri]
+        (when-let [[base name uri]
                    (or (find-local-file (add-underscore url) parent)
                        (find-local-file url parent)
                        (find-resource (io/resource (add-underscore url)))
@@ -72,9 +72,7 @@
           ; (util/info "Found base: %s name: %s\n" base name)
           ; jsass doesn't know how to read content from other than files?
           (Collections/singletonList
-            (if (= :resource type)
-              (Import. name base (slurp uri))
-              (Import. name base))))))))
+            (Import. name base (slurp uri))))))))
 
 (def ^:private output-styles
   {:nested OutputStyle/NESTED
