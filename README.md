@@ -5,6 +5,8 @@ Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libs
 
 ## Usage
 
+Jsass requires Java 1.8.
+
 Check [boot-sass](https://github.com/Deraen/boot-sass) and [lein-sass4clj](https://github.com/Deraen/lein-sass4clj).
 
 ## Features
