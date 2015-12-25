@@ -5,10 +5,11 @@
    [boot.pod        :as pod]
    [boot.core       :as core]
    [boot.util       :as util]
-   [clojure.string  :as string]))
+   [clojure.string  :as string]
+   [deraen.boot-sass.version :refer [+version+]]))
 
 (def ^:private deps
-  '[[deraen/sass4clj "0.1.1"]])
+  [['deraen/sass4clj +version+]])
 
 (defn by-pre
   [exts files & [negate?]]
@@ -22,13 +23,19 @@
           true))
 
 (core/deftask sass
-  "Compile Sass code.
+  "SASS CSS compiler.
 
-   Output-styles:
-   - :nested
-   - :compact
-   - :expanded
-   - :compressed"
+  For each `.main.sass` or `.main.scss` file in source-paths creates equivalent `.css` file.
+  For example to create file `{target-path}/public/css/style.css` your sass
+  code should be at path `{source-path}/public/css/style.main.scss`.
+
+  If you are seeing SLF4J warnings, check https://github.com/Deraen/sass4clj#log-configuration
+
+  Output-styles:
+  - :nested
+  - :compact
+  - :expanded
+  - :compressed"
   [o output-style STYLE kw "Set output-style"]
   (let [output-dir  (core/tmp-dir!)
         p           (-> (core/get-env)

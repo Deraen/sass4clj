@@ -1,28 +1,63 @@
-# Sass4clj
+# Sass4clj [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
+
 [![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)
+[![Clojars Project](http://clojars.org/deraen/boot-sass/latest-version.svg)](http://clojars.org/deraen/boot-sass)<br>
+[![Clojars Project](http://clojars.org/deraen/lein-sass4clj/latest-version.svg)](http://clojars.org/deraen/lein-sass4clj)
 
 Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
+This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http://leiningen.org/) tasks.
 
-## Usage
-
-Jsass requires Java 1.8.
-
-Check [boot-sass](https://github.com/Deraen/boot-sass) and [lein-sass4clj](https://github.com/Deraen/lein-sass4clj).
+For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 
 ## Features
 
-- Load imports from classpath
-  - Loading order. `@import "{name}";` at `{path}`.
-    1. check if file `{path}/{name}.sass` exists
-    2. try `(io/resource "{name}.sass")`
-    3. try `(io/resource "{path}/{name}.sass")`
-    4. check if webjars asset map contains `{name}`
-      - Resource `META-INF/resources/webjars/{package}/{version}/{path}` can be referred using `{package}/{path}`
-      - E.g. `bootstrap/sass/bootstrap.scss` => `META-INF/resources/webjars/bootstrap/4.0.0-alpha/scss/bootstrap.scss`
-  - You should be able to depend on `[org.webjars/bootstrap "3.3.1"]`
-    and use `@import "bootstrap/sass/bootstrap";`
+- Jsass requires Java 1.8.
+- Load imports directly from Java classpath (e.g. Webjars)
+    - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 
-## License
+## Boot
+
+* Provides the `sass` task (`deraen.boot-sass/sass`)
+* For each `.main.sass` or `.main.scss` file in the fileset creates equivalent `.css` file.
+* Check `boot sass --help` for task options.
+
+## Leiningen
+
+* Provides the `sass4clj` task
+* For each `.main.sass` or `.main.scss` file in source-dirs creates equivalent `.css` file.
+* Check `lein help sass4clj` for options.
+
+## Import load order
+
+Loading order for `@import "{name}";` on file at `{path}`
+
+1. Local file at `{path}/{name}.sass` or `{path}/{name}.scss`
+2. Classpath resource `(io/resource "{name}.ext")`
+3. Classpath resource `(io/resource "{path}/{name}.ext")`
+4. Webjar asset
+    - Resource `META-INF/resources/webjars/{package}/{version}/{path}` can be referred using `{package}/{path}`
+    - For example `@import "bootstrap/scss/bootstrap.scss";` will import  `META-INF/resources/webjars/bootstrap/4.0.0-alpha/scss/bootstrap.scss`
+
+## FAQ
+
+### Log configuration
+
+If you don't have any slf4j implementations you will see a warning:
+
+```
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+```
+
+To disable this add a no operation logger to your project. As this is only required
+on build phase, you can use `:scope "test"` so that the dependency is not
+transitive and is not included in uberjar. Alternatively you can add this
+dependency to your Leiningen dev profile.
+
+```
+[org.slf4j/slf4j-nop "1.7.13" :scope "test"]
+```
 
 Copyright © 2014-2015 Juho Teperi
 

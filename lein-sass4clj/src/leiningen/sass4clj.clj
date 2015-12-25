@@ -1,10 +1,12 @@
 (ns leiningen.sass4clj
-  (:require
-    [leiningen.help]
-    [leiningen.core.eval :as leval]
-    [leiningen.core.project :as project]
-    [clojure.java.io :as io]
-    [clojure.string :as string]))
+  (:require [leiningen.help]
+            [leiningen.core.eval :as leval]
+            [leiningen.core.project :as project]
+            [leiningen.core.main :as main]
+            [leiningen.help :as help]
+            [clojure.java.io :as io]
+            [clojure.string :as string]
+            [leiningen.sass4clj.version :refer [+version+]]))
 
 (defn main-file? [file]
   (and (or (.endsWith (.getName file) ".scss")
@@ -12,16 +14,15 @@
        (not (.startsWith (.getName file) "_"))))
 
 (defn find-main-files [source-paths]
-  (->> source-paths
-       (map (fn [source-path]
-              (let [file (io/file source-path)]
-                (->> (file-seq file)
-                     (filter main-file?)
-                     (map (fn [x] [(.getPath x) (.toString (.relativize (.toURI file) (.toURI x)))]))))))
-       (apply concat)))
+  (mapcat (fn [source-path]
+            (let [file (io/file source-path)]
+              (->> (file-seq file)
+                   (filter main-file?)
+                   (map (fn [x] [(.getPath x) (.toString (.relativize (.toURI file) (.toURI x)))])))))
+          source-paths))
 
-(def sass4j-profile {:dependencies '[[deraen/sass4clj "0.1.1"]
-                                     [watchtower "0.1.1"]]})
+(def sass4j-profile {:dependencies [['deraen/sass4clj +version+]
+                                    ['watchtower "0.1.1"]]})
 
 ; From lein-cljsbuild
 (defn- eval-in-project [project form requires]
@@ -42,7 +43,8 @@
 (defn- run-compiler
   "Run the sasscss compiler."
   [project
-   {:keys [source-paths target-path output-style verbosity]}
+   {:keys [source-paths target-path]
+    :as options}
    watch?]
   (let [project' (project/merge-profiles project [sass4j-profile])]
     (eval-in-project
@@ -55,9 +57,10 @@
                     (sass4clj.core/sass-compile-to-file
                       path#
                       output-path#
-                      {:source-paths ~source-paths
-                       :output-style ~(if output-style (keyword output-style))
-                       :verbosity ~(or verbosity 1)})))]
+                      ~(-> options
+                           (dissoc :target-path :source-paths)
+                           (update-in [:output-style] (fn [x] (if x (keyword x))))
+                           (update-in [:verbosity] (fn [x] (or x 1)))))))]
          (if ~watch?
            @(watchtower.core/watcher
              ~source-paths
@@ -68,25 +71,48 @@
            (f#)))
       '(require 'sass4clj.core 'watchtower.core))))
 
+;; For docstrings
+
 (defn- once
   "Compile sass files once."
-  [project config]
-  (run-compiler project config false))
+  [project]
+  nil)
 
 (defn- auto
   "Compile sass files, then watch for changes and recompile until interrupted."
-  [project config]
-  (run-compiler project config true))
+  [project]
+  nil)
 
 (defn sass4clj
-  "Run the {sass} css compiler plugin."
+  "SASS CSS compiler.
+
+For each `.main.sass` or `.main.scss` file in source-paths creates equivalent `.css` file.
+For example to create file `{target-path}/public/css/style.css` your sass
+code should be at path `{source-path}/public/css/style.main.scss`.
+
+If you are seeing SLF4J warnings, check https://github.com/Deraen/sass4clj#log-configuration
+
+Options should be provided using `:sass` key in project map.
+
+Available options:
+:target-path          The path where CSS files are written to.
+:source-paths         Collection of paths where SASS files are read from.
+:output-style         Possible types are :nested, :compact, :expanded and :compressed.
+:verbosity            Set verbosity level, valid values are 1 and 2.
+
+Command arguments:
+Add `:debug` as subtask argument to enable debugging output."
   {:help-arglists '([once auto])
    :subtasks      [#'once #'auto]}
   ([project]
-   (println (leiningen.help/help-for "sass4j"))
-   (leiningen.core.main/abort))
+   (println (help/help-for "sass4clj"))
+   (main/abort))
   ([project subtask & args]
-   (let [config (:sass4clj project)]
+   (let [args (set args)
+         config (cond-> (:sass project)
+                  (contains? args ":debug") (assoc :verbosity 2))]
      (case subtask
-       "once" (apply once project config args)
-       "auto" (apply auto project config args)))))
+       "once" (run-compiler project config false)
+       "auto" (run-compiler project config true)
+       "help" (println (help/help-for "sass4clj"))
+       (main/warn "Unknown task.")))))
