@@ -1,6 +1,6 @@
 # Sass4clj [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
 
-[![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)
+[![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)<br>
 [![Clojars Project](http://clojars.org/deraen/boot-sass/latest-version.svg)](http://clojars.org/deraen/boot-sass)<br>
 [![Clojars Project](http://clojars.org/deraen/lein-sass4clj/latest-version.svg)](http://clojars.org/deraen/lein-sass4clj)
 
@@ -58,6 +58,8 @@ dependency to your Leiningen dev profile.
 ```
 [org.slf4j/slf4j-nop "1.7.13" :scope "test"]
 ```
+
+## License
 
 Copyright © 2014-2015 Juho Teperi
 
