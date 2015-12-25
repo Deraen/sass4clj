@@ -57,7 +57,7 @@
   (comp
    (with-files
     (fn [x] (and (re-find #"sass4clj" (tmp-path x))
-                 (not (re-find #"lein" (tmp-path x)))))
+                 (not (re-find #"leiningen" (tmp-path x)))))
     (comp
      (pom
       :project 'deraen/sass4clj
@@ -66,7 +66,7 @@
      (install)))
 
    (with-files
-    (fn [x] (re-find #"boot[-_]sass" (tmp-path x)))
+    (fn [x] (re-find #"boot_sass" (tmp-path x)))
     (comp
      (pom
       :project 'deraen/boot-sass
@@ -77,7 +77,7 @@
      (install)))
 
    (with-files
-    (fn [x] (re-find #"(leiningen|lein-sass4clj)" (tmp-path x)))
+    (fn [x] (re-find #"leiningen" (tmp-path x)))
     (comp
      (pom
       :project 'deraen/lein-sass4clj
