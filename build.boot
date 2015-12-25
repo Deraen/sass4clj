@@ -13,7 +13,7 @@
                     [org.webjars/webjars-locator "0.29"]
 
                     ;; For testing the webjars asset locator implementation
-                    [org.webjars/bootstrap "3.3.6" :scope "test"]])
+                    [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]])
 
 (require '[adzerk.boot-test :refer [test]])
 

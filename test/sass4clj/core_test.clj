@@ -28,4 +28,4 @@ a {
   (is (= {:output css :source-map nil} (sass-compile local-test-file {}))))
 
 (deftest import-werbjars
-  (is (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3})))
+  (is (:output (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3}))))

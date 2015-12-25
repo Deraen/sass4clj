@@ -3,4 +3,4 @@
             [sass4clj.webjars :as webjars]))
 
 (deftest asset-map-test
-  (is (contains? (webjars/asset-map) "bootstrap/less/bootstrap.less")))
+  (is (contains? (webjars/asset-map) "bootstrap/scss/bootstrap.scss")))
