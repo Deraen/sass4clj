@@ -1,8 +1,4 @@
-# Sass4clj [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
-
-[![Clojars Project](http://clojars.org/deraen/sass4clj/latest-version.svg)](http://clojars.org/deraen/sass4clj)<br>
-[![Clojars Project](http://clojars.org/deraen/boot-sass/latest-version.svg)](http://clojars.org/deraen/boot-sass)<br>
-[![Clojars Project](http://clojars.org/deraen/lein-sass4clj/latest-version.svg)](http://clojars.org/deraen/lein-sass4clj)
+# Sass4clj [![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj) [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
 
 Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
 This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http://leiningen.org/) tasks.
@@ -15,13 +11,13 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 
-## Boot
+## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass)
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
 * For each `.main.sass` or `.main.scss` file in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
-## Leiningen
+## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj)
 
 * Provides the `sass4clj` task
 * For each `.main.sass` or `.main.scss` file in source-dirs creates equivalent `.css` file.
