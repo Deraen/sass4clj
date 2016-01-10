@@ -1,4 +1,4 @@
-# Sass4clj [![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj) [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
+# Sass4clj [![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj) [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj) [![Downloads](https://jarkeeper.com/deraen/sass4clj/downloads.svg)](https://jarkeeper.com/deraen/sass4clj) [![Dependencies Status](https://jarkeeper.com/deraen/sass4clj/status.svg)](https://jarkeeper.com/deraen/sass4clj)
 
 Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
 This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http://leiningen.org/) tasks.
@@ -11,13 +11,13 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 
-## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass)
+## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads](https://jarkeeper.com/deraen/boot-sass/downloads.svg)](https://jarkeeper.com/deraen/boot-sass)
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
 * For each `.main.sass` or `.main.scss` file in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
-## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj)
+## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads](https://jarkeeper.com/deraen/lein-sass4clj/downloads.svg)](https://jarkeeper.com/deraen/lein-sass4clj)
 
 * Provides the `sass4clj` task
 * For each `.main.sass` or `.main.scss` file in source-dirs creates equivalent `.css` file.
