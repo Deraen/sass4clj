@@ -7,7 +7,10 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 
 ## Features
 
-- Jsass requires Java 1.8.
+- Jsass features
+    - Requires Java 1.8
+    - Linux builds are automatically tested
+    - May work on OS X and Windows 64bit but there are no automated tests
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 
