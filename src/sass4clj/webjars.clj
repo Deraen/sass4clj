@@ -7,7 +7,7 @@
 
 (defn- asset-path [resource]
   (let [[_ name version path] (re-matches webjars-pattern resource)]
-    (str name File/separator path)))
+    (str name "/" path)))
 
 (defn asset-map
   "Create map of asset path to classpath resource url. Asset path is
