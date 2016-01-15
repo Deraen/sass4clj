@@ -14,7 +14,7 @@
 (defn find-local-file [file current-dir]
   (let [f (io/file current-dir file)]
     (if (.exists f)
-      [(.getParent f) (.getName f) f])))
+      [(-> f .getParentFile .toURI .toString) (.getName f) f])))
 
 (defn- url-parent [url]
   (let [[_ base name] (re-find #"(.*)/([^/]*)$" url)]
