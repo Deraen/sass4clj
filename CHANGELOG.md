@@ -1,8 +1,11 @@
 ## 0.2.1 (22.2.2016)
 
+**[compare](https://github.com/Deraen/sass4clj/compare/0.2.0...0.2.1)**
+
 - Fixed the documentation about main files
     - Main files don't need to end with `.main.ext`
     - Main files are the files not starting with `_`
+- Fix URI construction on Windows ([#7](https://github.com/Deraen/sass4clj/pull/7))
 
 ## 0.2.0 (25.12.2015)
 
