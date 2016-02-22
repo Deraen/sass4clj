@@ -1,4 +1,4 @@
-(def +version+ "0.2.0")
+(def +version+ "0.2.1")
 
 (set-env!
   :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
