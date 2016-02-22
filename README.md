@@ -13,17 +13,18 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
     - May work on OS X and Windows 64bit but there are no automated tests
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
+- Assumes that files starting with `_` are [partial files](http://sass-lang.com/guide) and should not be compiled into CSS files.
 
 ## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads](https://jarkeeper.com/deraen/boot-sass/downloads.svg)](https://jarkeeper.com/deraen/boot-sass)
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
-* For each `.main.sass` or `.main.scss` file in the fileset creates equivalent `.css` file.
+* For each `.sass` or `.scss` file not starting with `_` in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
 ## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads](https://jarkeeper.com/deraen/lein-sass4clj/downloads.svg)](https://jarkeeper.com/deraen/lein-sass4clj)
 
 * Provides the `sass4clj` task
-* For each `.main.sass` or `.main.scss` file in source-dirs creates equivalent `.css` file.
+* For each `.sass` or `.scss` file not starting with `_` in source-dirs creates equivalent `.css` file.
 * Check `lein help sass4clj` for options.
 
 ## Import load order
