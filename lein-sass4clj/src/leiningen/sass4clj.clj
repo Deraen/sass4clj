@@ -86,9 +86,9 @@
 (defn sass4clj
   "SASS CSS compiler.
 
-For each `.main.sass` or `.main.scss` file in source-paths creates equivalent `.css` file.
+For each `.sass` or `.scss` file not starting with `_` in source-paths creates equivalent `.css` file.
 For example to create file `{target-path}/public/css/style.css` your sass
-code should be at path `{source-path}/public/css/style.main.scss`.
+code should be at path `{source-path}/public/css/style.scss`.
 
 If you are seeing SLF4J warnings, check https://github.com/Deraen/sass4clj#log-configuration
 
