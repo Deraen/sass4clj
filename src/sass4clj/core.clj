@@ -54,19 +54,16 @@
   (reify
     Importer
     (^Collection apply [this ^String url ^Import prev]
-      ; (println "import" url)
-      ; (util/info "Import: %s\n" url)
-      ; (util/info "Prev name: %s base: %s\n" (.getUri prev) (.getBase prev))
+      ; (util/info "ImportUri: %s\n" (.getImportUri prev))
+      ; (util/info "AbsoluteUri: %s\n" (.getAbsoluteUri prev))
       (let [url (add-ext url)
-            [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getUri prev)))]
-        ; (util/info "Parent: %s\n" parent)
+            parent (str (.getAbsoluteUri prev))]
         (when-let [[base name uri]
                    (or (find-local-file (add-underscore url) parent)
                        (find-local-file url parent)
-                       (find-resource (io/resource (add-underscore url)))
-                       (find-resource (io/resource url))
                        (find-resource (io/resource (add-underscore (join-url parent url))))
                        (find-resource (io/resource (join-url parent url)))
+                       (find-webjars ctx (add-underscore (join-url parent url)))
                        (find-webjars ctx (add-underscore url))
                        (find-webjars ctx url))]
           ; (util/info "Found base: %s name: %s\n" base name)
@@ -115,13 +112,12 @@
                      (.compileString compiler input opts)
                      (.compileFile compiler (.toURI input) nil opts))]
         ; TODO: .getErrorJson could be useful
-        (when-not (zero? (.getErrorStatus output))
-          (util/fail (.getErrorMessage output)))
         {:output (.getCss output)
          :source-map (.getSourceMap output)})
       (catch CompilationException e
-        (util/fail (.getMessage e))
-        {:error e}))))
+        (util/fail (.getErrorText e))
+        ;{:error e}
+        ))))
 
 (defn sass-compile-to-file
   "Arguments:

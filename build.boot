@@ -1,19 +1,19 @@
-(def +version+ "0.2.1")
+(def +version+ "0.2.2")
 
 (set-env!
-  :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
-  :source-paths #{"test" "test-resources"}
-  :dependencies   '[[org.clojure/clojure "1.7.0" :scope "provided"]
-                    [boot/core "2.5.2" :scope "provided"]
-                    [adzerk/boot-test "1.0.7" :scope "test"]
-                    [io.bit3/jsass "3.3.1"]
-                    ;; Webjars-locator uses logging
-                    [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
+ :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
+ :source-paths #{"test" "test-resources"}
+ :dependencies   '[[org.clojure/clojure "1.7.0" :scope "provided"]
+                   [boot/core "2.5.2" :scope "provided"]
+                   [adzerk/boot-test "1.0.7" :scope "test"]
+                   [io.bit3/jsass "5.2.0"]
+                   ;; Webjars-locator uses logging
+                   [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
 
-                    [org.webjars/webjars-locator "0.29"]
+                   [org.webjars/webjars-locator "0.29"]
 
-                    ;; For testing the webjars asset locator implementation
-                    [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]])
+                   ;; For testing the webjars asset locator implementation
+                   [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]])
 
 (require '[adzerk.boot-test :refer [test]])
 
