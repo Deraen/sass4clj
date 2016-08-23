@@ -3,6 +3,11 @@
             [sass4clj.core :refer :all])
   (:import [java.io File]))
 
+(deftest join-url-test
+  (is (= "foo/bar" (join-url "foo" "bar")))
+  (is (= "foo/bar" (join-url "foo/" "bar")))
+  (is (= "foo/xxx" (join-url "foo/bar" "../xxx"))))
+
 (def sass
 "$test: #fff;
 @import \"foo.scss\";
@@ -29,3 +34,6 @@ a {
 
 (deftest import-werbjars
   (is (:output (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3}))))
+
+(deftest compile-material-design-lite
+  (is (:output (sass-compile "@import \"material-design-lite/src/material-design-lite\";" {}))))

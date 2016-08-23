@@ -1,21 +1,22 @@
-(def +version+ "0.2.1")
+(def +version+ "0.3.0-SNAPSHOT")
 
 (set-env!
   :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
   :source-paths #{"test" "test-resources"}
   :dependencies   '[[org.clojure/clojure "1.7.0" :scope "provided"]
-                    [boot/core "2.5.2" :scope "provided"]
-                    [adzerk/boot-test "1.0.7" :scope "test"]
-                    [io.bit3/jsass "3.3.1"]
+                    [boot/core "2.6.0" :scope "provided"]
+                    [metosin/boot-alt-test "0.1.2" :scope "test"]
+                    [io.bit3/jsass "5.2.0"]
                     ;; Webjars-locator uses logging
                     [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
 
                     [org.webjars/webjars-locator "0.29"]
 
                     ;; For testing the webjars asset locator implementation
-                    [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]])
+                    [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]
+                    [org.webjars.bower/material-design-lite "1.2.0" :scope "test"]])
 
-(require '[adzerk.boot-test :refer [test]])
+(require '[metosin.boot-alt-test :refer [alt-test]])
 
 (task-options!
   pom {:version     +version+
@@ -99,7 +100,11 @@
    (build)
    (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
 
+(deftask autotest []
+  (comp
+    (watch)
+    (alt-test)))
+
 (deftask run-tests []
   (comp
-   (test :namespaces #{'sass4clj.core-test 'sass4clj.webjars-test})))
-
+    (alt-test)))

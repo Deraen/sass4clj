@@ -14,27 +14,22 @@
 (defn find-local-file [file current-dir]
   (let [f (io/file current-dir file)]
     (if (.exists f)
-      [(-> f .getParentFile .toURI .toString) (.getName f) f])))
+      [(.getPath f) f])))
 
-(defn- url-parent [url]
-  (let [[_ base name] (re-find #"(.*)/([^/]*)$" url)]
-    [base (str base "/" name) :file]))
-
-(defn- join-url [& parts]
-  (string/join "/" parts))
+(defn join-url [& parts]
+  (.toString (.normalize (URI. (string/join "/" parts)))))
 
 (defn find-resource [url]
   (if url
     (case (.getProtocol url)
       "file"
-      (let [[base name] (url-parent (str url))]
-        [base name url])
+      [(.toString url) url]
 
       "jar"
       (let [jar-url (.openConnection url)
-            [base name] (url-parent (.getEntryName jar-url))]
+            name    (.getEntryName jar-url)]
         (util/dbug "Found %s from resources\n" url)
-        [base name url]))))
+        [name url]))))
 
 (defn find-webjars [ctx file]
   (when-let [path (get (:asset-map ctx) file)]
@@ -53,14 +48,13 @@
 (defn custom-sass-importer [ctx]
   (reify
     Importer
-    (^Collection apply [this ^String url ^Import prev]
-      ; (println "import" url)
-      ; (util/info "Import: %s\n" url)
-      ; (util/info "Prev name: %s base: %s\n" (.getUri prev) (.getBase prev))
-      (let [url (add-ext url)
-            [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getUri prev)))]
-        ; (util/info "Parent: %s\n" parent)
-        (when-let [[base name uri]
+    (^Collection apply [this ^String import-url ^Import prev]
+      ; (util/info "Import: %s\n" import-url)
+      ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
+      (let [url (add-ext import-url)
+            [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
+        (util/info "Parent: %s\n" parent)
+        (when-let [[found-absolute-uri uri]
                    (or (find-local-file (add-underscore url) parent)
                        (find-local-file url parent)
                        (find-resource (io/resource (add-underscore url)))
@@ -69,10 +63,10 @@
                        (find-resource (io/resource (join-url parent url)))
                        (find-webjars ctx (add-underscore url))
                        (find-webjars ctx url))]
-          ; (util/info "Found base: %s name: %s\n" base name)
+          ; (util/info "Import: %s, result: %s\n" import-url found-absolute-uri)
           ; jsass doesn't know how to read content from other than files?
           (Collections/singletonList
-            (Import. name base (slurp uri))))))))
+            (Import. import-url found-absolute-uri (slurp uri))))))))
 
 (def ^:private output-styles
   {:nested OutputStyle/NESTED
@@ -111,12 +105,15 @@
             opts (build-options options)
             _ (doto (.getImporters opts)
                 (.add (custom-sass-importer ctx)))
-            output (if (string? input)
-                     (.compileString compiler input opts)
-                     (.compileFile compiler (.toURI input) nil opts))]
-        ; TODO: .getErrorJson could be useful
-        (when-not (zero? (.getErrorStatus output))
-          (util/fail (.getErrorMessage output)))
+            output (try
+                     (if (string? input)
+                       (.compileString compiler input opts)
+                       (.compileFile compiler (.toURI input) nil opts))
+                     (catch CompilationException e
+                       {:error e}))]
+        ;; FIXME:
+        (when (:error output)
+          (throw (:error output)))
         {:output (.getCss output)
          :source-map (.getSourceMap output)})
       (catch CompilationException e
