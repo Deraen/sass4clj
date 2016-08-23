@@ -53,7 +53,7 @@
       ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
       (let [url (add-ext import-url)
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
-        (util/info "Parent: %s\n" parent)
+        ; (util/info "Parent: %s\n" parent)
         (when-let [[found-absolute-uri uri]
                    (or (find-local-file (add-underscore url) parent)
                        (find-local-file url parent)
