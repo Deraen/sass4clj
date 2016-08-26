@@ -7,10 +7,11 @@
                     [boot/core "2.6.0" :scope "provided"]
                     [metosin/boot-alt-test "0.1.2" :scope "test"]
                     [io.bit3/jsass "5.2.0"]
-                    ;; Webjars-locator uses logging
-                    [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
+                    [cheshire "5.6.3"]
 
                     [org.webjars/webjars-locator "0.29"]
+                    ;; Webjars-locator uses logging
+                    [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
 
                     ;; For testing the webjars asset locator implementation
                     [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]

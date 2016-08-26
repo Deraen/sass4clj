@@ -3,7 +3,8 @@
     [clojure.java.io :as io]
     [clojure.string :as string]
     [sass4clj.util :as util]
-    [sass4clj.webjars :as webjars])
+    [sass4clj.webjars :as webjars]
+    [cheshire.core :as json])
   (:import
     [java.io IOException File]
     [java.net JarURLConnection URL URI]
@@ -105,20 +106,13 @@
             opts (build-options options)
             _ (doto (.getImporters opts)
                 (.add (custom-sass-importer ctx)))
-            output (try
-                     (if (string? input)
-                       (.compileString compiler input opts)
-                       (.compileFile compiler (.toURI input) nil opts))
-                     (catch CompilationException e
-                       {:error e}))]
-        ;; FIXME:
-        (when (:error output)
-          (throw (:error output)))
+            output (if (string? input)
+                     (.compileString compiler input opts)
+                     (.compileFile compiler (.toURI input) nil opts))]
         {:output (.getCss output)
          :source-map (.getSourceMap output)})
       (catch CompilationException e
-        (util/fail (.getMessage e))
-        {:error e}))))
+        {:error (json/parse-string (.getErrorJson e) true)}))))
 
 (defn sass-compile-to-file
   "Arguments:
@@ -134,8 +128,10 @@
         output-file (io/file output-path)
         source-map-name (if source-map (str output-path ".map"))
         source-map-output (io/file (str output-path ".map"))
-        {:keys [output source-map]} (sass-compile input-file (assoc options :source-map-path source-map-name))]
+        {:keys [output source-map error]} (sass-compile input-file (assoc options :source-map-path source-map-name))]
     (when output
       (io/make-parents output-file)
       (spit output-file output)
-      (when source-map (spit source-map-output source-map)))))
+      (when source-map (spit source-map-output source-map)))
+    (if error
+      {:error error})))

@@ -5,6 +5,7 @@
    [boot.pod        :as pod]
    [boot.core       :as core]
    [boot.util       :as util]
+   [boot.file       :as file]
    [clojure.string  :as string]
    [deraen.boot-sass.version :refer [+version+]]))
 
@@ -21,6 +22,34 @@
                core/input-files
                (core/by-ext [".scss" ".sass"]))
           true))
+
+(defn- find-relative-path [dirs filepath]
+  (if-let [file (io/file filepath)]
+    (let [parent (->> dirs
+                      (map io/file)
+                      (some (fn [x] (if (file/parent? x file) x))))]
+      (if parent (.getPath (file/relative-to parent file))))))
+
+(defn- find-original-path [source-paths dirs filepath]
+  (if-let [rel-path (find-relative-path dirs filepath)]
+    (or (some (fn [source-path]
+                (let [f (io/file source-path rel-path)]
+                  (if (.exists f)
+                    (.getPath f))))
+              source-paths)
+        rel-path)
+    filepath))
+
+(defn- fixed-message
+  "Replaces the tmp-path in formatted error message using path in working dir."
+  [{:keys [formatted file]}]
+  (let [{:keys [formatted file]} (:error r)
+        correct-path (find-original-path (concat (:source-paths pod/env) (:resource-paths pod/env))
+                                         (:directories pod/env)
+                                         file)]
+    (string/replace formatted #"(on line \d* of )(.*)" (fn [[_ prefix wrong-path]]
+                                                         ;; FIXME: search file using wrong-path
+                                                         (str prefix correct-path))))
 
 (core/deftask sass
   "SASS CSS compiler.
@@ -55,12 +84,15 @@
                   :let [input-path (.getPath (core/tmp-file f))
                         output-rel-path (string/replace (core/tmp-path f) #"\.(scss|sass)$" ".css")
                         output-path (.getPath (io/file output-dir output-rel-path))]]
-            (pod/with-call-in @p
-              (sass4clj.core/sass-compile-to-file
-                ~input-path
-                ~output-path
-                {:verbosity ~(deref util/*verbosity*)
-                 :output-style ~output-style})))))
+            (let [{:keys [error]}
+                  (pod/with-call-in @p
+                    (sass4clj.core/sass-compile-to-file
+                      ~input-path
+                      ~output-path
+                      {:verbosity ~(deref util/*verbosity*)
+                       :output-style ~output-style}))]
+              (when error
+                (throw (Exception. (fixed-message error)))))))
         (-> fileset
             (core/add-resource output-dir)
-            core/commit!))))
+            core/commit!)))))
