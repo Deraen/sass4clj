@@ -6,7 +6,8 @@
 (deftest join-url-test
   (is (= "foo/bar" (join-url "foo" "bar")))
   (is (= "foo/bar" (join-url "foo/" "bar")))
-  (is (= "foo/xxx" (join-url "foo/bar" "../xxx"))))
+  (is (= "foo/xxx" (join-url "foo/bar" "../xxx")))
+  (is (= "foo bar/xxx" (join-url "foo bar" "xxx"))))
 
 (def sass
 "$test: #fff;

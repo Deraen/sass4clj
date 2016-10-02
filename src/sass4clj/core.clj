@@ -18,7 +18,12 @@
       [(.getPath f) f])))
 
 (defn join-url [& parts]
-  (.toString (.normalize (URI. (string/join "/" parts)))))
+  (-> (string/join "/" parts)
+      (string/replace " " "%20")
+      (URI.)
+      (.normalize)
+      (.toString)
+      (string/replace "%20" " ")))
 
 (defn find-resource [url]
   (if url
