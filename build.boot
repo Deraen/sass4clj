@@ -3,19 +3,19 @@
 (set-env!
   :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
   :source-paths #{"test" "test-resources"}
-  :dependencies   '[[org.clojure/clojure "1.7.0" :scope "provided"]
+  :dependencies   '[[org.clojure/clojure "1.8.0" :scope "provided"]
                     [boot/core "2.6.0" :scope "provided"]
                     [metosin/boot-alt-test "0.1.2" :scope "test"]
                     [io.bit3/jsass "5.3.0"]
                     [cheshire "5.6.3"]
 
-                    [org.webjars/webjars-locator "0.29"]
+                    [org.webjars/webjars-locator "0.32"]
                     ;; Webjars-locator uses logging
-                    [org.slf4j/slf4j-nop "1.7.12" :scope "test"]
+                    [org.slf4j/slf4j-nop "1.7.21" :scope "test"]
 
                     ;; For testing the webjars asset locator implementation
                     [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]
-                    [org.webjars.bower/material-design-lite "1.2.0" :scope "test"]
+                    [org.webjars.bower/material-design-lite "1.2.1" :scope "test"]
                     ;; Alt test will load any ns?
                     [leiningen "2.7.1" :scope "test"]])
 
