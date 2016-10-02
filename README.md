@@ -1,4 +1,9 @@
-# Sass4clj [![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj) [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj) [![Downloads](https://jarkeeper.com/deraen/sass4clj/downloads.svg)](https://jarkeeper.com/deraen/sass4clj) [![Dependencies Status](https://jarkeeper.com/deraen/sass4clj/status.svg)](https://jarkeeper.com/deraen/sass4clj)
+# Sass4clj
+[![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj)
+[![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
+[![AppVeyor](https://img.shields.io/appveyor/ci/deraen/sass4clj.svg?maxAge=2592000&label=windows)](https://ci.appveyor.com/project/Deraen/sass4clj)
+[![Downloads](https://jarkeeper.com/deraen/sass4clj/downloads.svg)](https://jarkeeper.com/deraen/sass4clj)
+[![Dependencies Status](https://jarkeeper.com/deraen/sass4clj/status.svg)](https://jarkeeper.com/deraen/sass4clj)
 
 Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
 This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http://leiningen.org/) tasks.
