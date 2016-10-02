@@ -1,7 +1,7 @@
 version: "{build}"
 build: off
 install:
-  - cmd: mkdir -p C:\Users\appveyor\bin
+  - cmd: if not exists "C:\Users\appveyor\bin" mkdir -p "C:\Users\appveyor\bin"
   - cmd: SET PATH=C:\Users\appveyor\bin;%PATH%
   - cmd: curl -L https://github.com/boot-clj/boot-bin/releases/download/latest/boot.exe -o C:\Users\appveyor\bin\boot.exe
 cache:
