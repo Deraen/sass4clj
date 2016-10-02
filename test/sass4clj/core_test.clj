@@ -3,11 +3,19 @@
             [sass4clj.core :refer :all])
   (:import [java.io File]))
 
+(deftest normalize-url-test
+  (is (= "foo/bar" (normalize-url "foo/./bar")))
+  (is (= "foo/bar" (normalize-url "foo//bar")))
+  (is (= "bar" (normalize-url "foo/../bar"))))
+
 (deftest join-url-test
+  (is (= "foo/bar" (join-url "foo" "bar")))
   (is (= "foo/bar" (join-url "foo" "bar")))
   (is (= "foo/bar" (join-url "foo/" "bar")))
   (is (= "foo/xxx" (join-url "foo/bar" "../xxx")))
-  (is (= "foo bar/xxx" (join-url "foo bar" "xxx"))))
+  (is (= "foo bar/xxx" (join-url "foo bar" "xxx")))
+  (is (= "foo%20bar/xxx" (join-url "foo%20bar" "xxx")))
+  (is (= "a/d.less" (join-url "a/b/c" "../../d.less"))))
 
 (def sass
 "$test: #fff;

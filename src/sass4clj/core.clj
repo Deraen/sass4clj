@@ -7,7 +7,7 @@
     [cheshire.core :as json])
   (:import
     [java.io IOException File]
-    [java.net JarURLConnection URL URI]
+    [java.net JarURLConnection URI]
     [java.util Collection Collections]
     [io.bit3.jsass CompilationException Options Output OutputStyle]
     [io.bit3.jsass.importer Import Importer]))
@@ -17,13 +17,26 @@
     (if (.exists f)
       [(.getPath f) f])))
 
+(defn normalize-url
+  "Simple URL normalization logic for import paths. Can normalize
+  relative paths."
+  [url-string]
+  (loop [result nil
+         parts (string/split url-string #"/")]
+    (if (seq parts)
+      (let [part (first parts)]
+        (case part
+          ;; Skip empty
+          "" (recur result (rest parts))
+          ;; Skip "."
+          "." (recur result (rest parts))
+          ;; Remove previous part
+          ".." (recur (butlast result) (rest parts))
+          (recur (conj result part) (rest parts))))
+      (string/join "/" (reverse result)))))
+
 (defn join-url [& parts]
-  (-> (string/join "/" parts)
-      (string/replace " " "%20")
-      (URI.)
-      (.normalize)
-      (.toString)
-      (string/replace "%20" " ")))
+  (normalize-url (string/join "/" parts)))
 
 (defn find-resource [url]
   (if url
