@@ -6,7 +6,11 @@
 (deftest normalize-url-test
   (is (= "foo/bar" (normalize-url "foo/./bar")))
   (is (= "foo/bar" (normalize-url "foo//bar")))
-  (is (= "bar" (normalize-url "foo/../bar"))))
+  (is (= "bar" (normalize-url "foo/../bar")))
+  (is (= "../foo" (normalize-url "../foo")))
+  (is (= "../../foo" (normalize-url "../../foo")))
+  (is (= "../../../foo" (normalize-url "../../../foo")))
+  (is (= "../foo" (normalize-url "a/../../foo"))))
 
 (deftest join-url-test
   (is (= "foo/bar" (join-url "foo" "bar")))

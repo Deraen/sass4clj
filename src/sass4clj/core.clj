@@ -30,8 +30,10 @@
           "" (recur result (rest parts))
           ;; Skip "."
           "." (recur result (rest parts))
-          ;; Remove previous part
-          ".." (recur (butlast result) (rest parts))
+          ;; Remove previous part, if there are previous non ".." parts
+          ".." (if (and (seq result) (not= ".." (first result)))
+                 (recur (rest result) (rest parts))
+                 (recur (conj result part) (rest parts)))
           (recur (conj result part) (rest parts))))
       (string/join "/" (reverse result)))))
 
