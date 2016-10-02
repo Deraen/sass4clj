@@ -43,13 +43,12 @@
 (defn- fixed-message
   "Replaces the tmp-path in formatted error message using path in working dir."
   [{:keys [formatted file]}]
-  (let [{:keys [formatted file]} (:error r)
-        correct-path (find-original-path (concat (:source-paths pod/env) (:resource-paths pod/env))
+  (let [correct-path (find-original-path (concat (:source-paths pod/env) (:resource-paths pod/env))
                                          (:directories pod/env)
                                          file)]
     (string/replace formatted #"(on line \d* of )(.*)" (fn [[_ prefix wrong-path]]
                                                          ;; FIXME: search file using wrong-path
-                                                         (str prefix correct-path))))
+                                                         (str prefix correct-path)))))
 
 (core/deftask sass
   "SASS CSS compiler.

@@ -15,7 +15,9 @@
 
                     ;; For testing the webjars asset locator implementation
                     [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]
-                    [org.webjars.bower/material-design-lite "1.2.0" :scope "test"]])
+                    [org.webjars.bower/material-design-lite "1.2.0" :scope "test"]
+                    ;; Alt test will load any ns?
+                    [leiningen "2.7.1" :scope "test"]])
 
 (require '[metosin.boot-alt-test :refer [alt-test]])
 
@@ -108,4 +110,6 @@
 
 (deftask run-tests []
   (comp
-    (alt-test)))
+    (write-version-file :namespace 'deraen.boot-sass.version)
+    (write-version-file :namespace 'leiningen.sass4clj.version)
+    (alt-test :fail true)))
