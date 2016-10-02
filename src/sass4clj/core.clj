@@ -79,6 +79,8 @@
   [{:keys [source-paths output-style source-map-path]}]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
+    ;; Hardcode to use Unix newlines, mostly because that's what the tests use
+    (.setLinefeed opts "\n")
     (doseq [source-path source-paths]
       (.add include-paths (io/file source-path)))
     (when output-style
