@@ -6,7 +6,7 @@
   :dependencies   '[[org.clojure/clojure "1.7.0" :scope "provided"]
                     [boot/core "2.6.0" :scope "provided"]
                     [metosin/boot-alt-test "0.1.2" :scope "test"]
-                    [io.bit3/jsass "5.2.0"]
+                    [io.bit3/jsass "5.3.0"]
                     [cheshire "5.6.3"]
 
                     [org.webjars/webjars-locator "0.29"]
