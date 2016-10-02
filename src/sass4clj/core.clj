@@ -6,8 +6,7 @@
     [sass4clj.webjars :as webjars]
     [cheshire.core :as json])
   (:import
-    [java.io IOException File]
-    [java.net JarURLConnection URI]
+    [java.net URI]
     [java.util Collection Collections]
     [io.bit3.jsass CompilationException Options Output OutputStyle]
     [io.bit3.jsass.importer Import Importer]))
