@@ -64,7 +64,8 @@
   - :compact
   - :expanded
   - :compressed"
-  [o output-style STYLE kw "Set output-style"
+  [s source-map  bool "Enable source-maps for compiled CSS."
+   o output-style STYLE kw "Set output-style"
    _ options VAL edn "Other options to sass4clj"]
   (let [output-dir  (core/tmp-dir!)
         p           (-> (core/get-env)
@@ -93,7 +94,8 @@
                         ~output-path
                         (merge
                           ~options
-                          {:verbosity ~(deref util/*verbosity*)
+                          {:source-map ~source-map
+                           :verbosity ~(deref util/*verbosity*)
                            :output-style ~output-style}))
                       (catch Exception e#
                         (let [data# (ex-data e#)]

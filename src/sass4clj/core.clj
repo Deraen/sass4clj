@@ -95,7 +95,7 @@
    :compressed OutputStyle/COMPRESSED})
 
 (defn- build-options
-  [{:keys [source-paths output-style source-map-path precision]}]
+  [{:keys [source-paths output-style source-map precision]}]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
     ;; Hardcode to use Unix newlines, mostly because that's what the tests use
@@ -104,9 +104,13 @@
       (.add include-paths (io/file source-path)))
     (when output-style
       (.setOutputStyle opts (get output-styles output-style)))
-    (when source-map-path
-      (.setSourceMapRoot opts (URI. ""))
-      (.setSourceMapFile opts (URI. source-map-path)))
+    (when source-map
+      ;; we manually append source-map uri in sass-compile-to-file
+      (.setOmitSourceMapUrl opts true)
+      ;; would be hard to deal with adding all the source-files to output...
+      ;; or at least harder than just one file.
+      (.setSourceMapContents opts true)
+      (.setSourceMapFile opts (URI. "placeholder.css.map")))
     (when precision
       (.setPrecision opts precision))
     opts))
@@ -119,7 +123,7 @@
    Options:
    - :source-map-path - Enables source-maps and uses this URL for
      sourceMappingURL. Relative to css file."
-  [input {:keys [verbosity]
+  [input {:keys [verbosity source-map]
           :or {verbosity 1}
           :as options}]
   (binding [util/*verbosity* verbosity]
@@ -133,7 +137,7 @@
                      (.compileString compiler input opts)
                      (.compileFile compiler (.toURI input) nil opts))]
         {:output (.getCss output)
-         :source-map (.getSourceMap output)})
+         :source-map (if source-map (.getSourceMap output))})
       (catch CompilationException e
         (throw (ex-info (.getMessage e) (assoc (json/parse-string (.getErrorJson e) true)
                                                :type ::error)))))))
@@ -152,9 +156,14 @@
         output-file (io/file output-path)
         source-map-name (if source-map (str output-path ".map"))
         source-map-output (io/file (str output-path ".map"))
-        {:keys [output source-map] :as result} (sass-compile input-file (assoc options :source-map-path source-map-name))]
+        {:keys [output source-map] :as result} (sass-compile input-file options)
+        source-map-url (str "/*# sourceMappingURL=" (.getName source-map-output) " */") ]
     (when output
       (io/make-parents output-file)
       (spit output-file output)
-      (when source-map (spit source-map-output source-map)))
-    result))
+      (when source-map
+        (spit output-file source-map-url :append true)
+        (spit source-map-output source-map)))
+    (if source-map
+      (assoc result :output (str output source-map-url))
+      result)))

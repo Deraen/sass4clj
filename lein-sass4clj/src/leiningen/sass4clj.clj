@@ -111,6 +111,9 @@ Available options:
 :source-paths         Collection of paths where SASS files are read from.
 :output-style         Possible types are :nested, :compact, :expanded and :compressed.
 :verbosity            Set verbosity level, valid values are 1 and 2.
+:source-map           Enable source-maps.
+
+Other options are passed as is to sass4clj.
 
 Command arguments:
 Add `:debug` as subtask argument to enable debugging output."

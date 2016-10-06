@@ -1,5 +1,7 @@
 (ns sass4clj.core-test
   (:require [clojure.test :refer :all]
+            [clojure.string :as string]
+            [clojure.java.io :as io]
             [sass4clj.core :refer :all])
   (:import [java.io File]))
 
@@ -41,9 +43,25 @@ a {
 (spit local-test-file (str "@import \"" (.getName test-file) "\";"))
 
 (deftest sass-compile-test
-  (is (= {:output css :source-map nil} (sass-compile test-file {})))
-  (is (= {:output css :source-map nil} (sass-compile sass {})))
-  (is (= {:output css :source-map nil} (sass-compile local-test-file {}))))
+  (is (= {:output css :source-map nil}
+         (sass-compile test-file {})))
+
+  (is (= {:output css :source-map nil}
+         (sass-compile sass {})))
+
+  (is (= {:output css :source-map nil}
+         (sass-compile local-test-file {}))))
+
+(deftest sass-compile-source-map-test
+  (let [out-file (File/createTempFile "sass4clj" "main.css")
+        {:keys [output source-map]} (sass-compile-to-file local-test-file out-file {:source-map true})]
+    (is (= (str "/*# sourceMappingURL=" (.getName out-file) ".map */")
+           (last (string/split output #"\n"))))
+
+    (is (= (str "/*# sourceMappingURL=" (.getName out-file) ".map */")
+           (last (string/split (slurp out-file) #"\n"))))
+
+    (is (string? source-map))))
 
 (deftest import-werbjars
   (is (:output (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3}))))
