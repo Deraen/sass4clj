@@ -2,9 +2,10 @@
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.2.1...master)**
 
-- Update to latest jsass
 - Run tests on Windows CI
-- Supports source maps
+- Update to latest jsass ([#6](https://github.com/Deraen/sass4clj/pull/6))
+- Supports source maps ([#1](https://github.com/Deraen/sass4clj/pull/1))
+- Support raw css imports ([#14](https://github.com/Deraen/sass4clj/pull/14))
 
 ## 0.2.1 (22.2.2016)
 

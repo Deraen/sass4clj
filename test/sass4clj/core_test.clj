@@ -25,12 +25,20 @@
 
 (def sass
 "$test: #fff;
-@import \"foo.scss\";
+
+@import \"url.css\";
+@import \"foo\";
+@import \"bar\";
+
 a { color: $test;}")
 
 (def css
-"h1 {
+"@import url(url.css);
+.from-scss {
   font-size: 12px; }
+
+.from-css {
+  color: black; }
 
 a {
   color: #fff; }

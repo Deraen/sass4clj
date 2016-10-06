@@ -72,17 +72,24 @@
       ; (util/info "Import: %s\n" import-url)
       ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
       (let [url (add-ext import-url)
+            css-url (if-not (.endsWith import-url ".css")
+                      (str import-url ".css"))
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
         ; (util/info "Parent: %s\n" parent)
         (when-let [[found-absolute-uri uri]
                    (or (find-local-file (add-underscore url) parent)
                        (find-local-file url parent)
+                       (if css-url (find-local-file css-url parent))
                        (find-resource (io/resource (add-underscore url)))
                        (find-resource (io/resource url))
+                       (if css-url (find-resource (io/resource css-url)))
                        (find-resource (io/resource (add-underscore (join-url parent url))))
                        (find-resource (io/resource (join-url parent url)))
+                       (if css-url (find-resource (io/resource (join-url parent css-url))))
                        (find-webjars ctx (add-underscore url))
-                       (find-webjars ctx url))]
+                       (find-webjars ctx url)
+                       (if css-url (find-webjars ctx css-url))
+                       )]
           ; (util/info "Import: %s, result: %s\n" import-url found-absolute-uri)
           ; jsass doesn't know how to read content from other than files?
           (Collections/singletonList
