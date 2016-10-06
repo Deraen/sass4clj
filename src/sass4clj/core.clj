@@ -72,7 +72,7 @@
       ; (util/info "Import: %s\n" import-url)
       ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
       (let [url (add-ext import-url)
-            css-url (if-not (.endsWith import-url ".css")
+            css-url (if-not (.endsWith import-url ".scss")
                       (str import-url ".css"))
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
         ; (util/info "Parent: %s\n" parent)
