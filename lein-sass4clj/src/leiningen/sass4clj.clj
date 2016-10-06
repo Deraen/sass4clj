@@ -48,6 +48,8 @@
    {:keys [source-paths target-path]
     :as options}
    watch?]
+  (when-not target-path
+    (main/abort "Lein-sass4clj requires :target-path option."))
   (let [project' (project/merge-profiles project [sass4j-profile])]
     (eval-in-project
       project'
