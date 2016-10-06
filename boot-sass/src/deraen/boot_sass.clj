@@ -64,7 +64,8 @@
   - :compact
   - :expanded
   - :compressed"
-  [o output-style STYLE kw "Set output-style"]
+  [o output-style STYLE kw "Set output-style"
+   _ options VAL edn "Other options to sass4clj"]
   (let [output-dir  (core/tmp-dir!)
         p           (-> (core/get-env)
                         (update-in [:dependencies] into deps)
@@ -90,8 +91,10 @@
                       (sass4clj.core/sass-compile-to-file
                         ~input-path
                         ~output-path
-                        {:verbosity ~(deref util/*verbosity*)
-                         :output-style ~output-style})
+                        (merge
+                          ~options
+                          {:verbosity ~(deref util/*verbosity*)
+                           :output-style ~output-style}))
                       (catch Exception e#
                         (let [data# (ex-data e#)]
                           (if (= :sass4clj.core/error (:type data#))

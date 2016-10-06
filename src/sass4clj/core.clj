@@ -95,7 +95,7 @@
    :compressed OutputStyle/COMPRESSED})
 
 (defn- build-options
-  [{:keys [source-paths output-style source-map-path]}]
+  [{:keys [source-paths output-style source-map-path precision]}]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
     ;; Hardcode to use Unix newlines, mostly because that's what the tests use
@@ -107,6 +107,8 @@
     (when source-map-path
       (.setSourceMapRoot opts (URI. ""))
       (.setSourceMapFile opts (URI. source-map-path)))
+    (when precision
+      (.setPrecision opts precision))
     opts))
 
 (defn sass-compile
