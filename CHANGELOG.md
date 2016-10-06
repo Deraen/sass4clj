@@ -4,6 +4,7 @@
 
 - Update to latest jsass
 - Run tests on Windows CI
+- Supports source maps
 
 ## 0.2.1 (22.2.2016)
 
