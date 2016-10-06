@@ -36,7 +36,9 @@
          (System/exit 0))
        (catch Exception e#
          (do
-           (.printStackTrace e#)
+           (if (= :sass4clj.core/error (:type (ex-data e#)))
+             (println (.getMessage e#))
+             (.printStackTrace e#))
            (System/exit 1))))
     requires))
 
@@ -54,13 +56,21 @@
                           :let [output-rel-path# (string/replace relative-path# #"\.(sass|scss)$" ".css")
                                 output-path#     (.getPath (io/file ~target-path output-rel-path#))]]
                     (println (format "Compiling {sass}... %s" relative-path#))
-                    (sass4clj.core/sass-compile-to-file
-                      path#
-                      output-path#
-                      ~(-> options
-                           (dissoc :target-path :source-paths)
-                           (update-in [:output-style] (fn [x] (if x (keyword x))))
-                           (update-in [:verbosity] (fn [x] (or x 1)))))))]
+                    (let [result#
+                          (try
+                            (sass4clj.core/sass-compile-to-file
+                              path#
+                              output-path#
+                              ~(-> options
+                                   (dissoc :target-path :source-paths)
+                                   (update-in [:output-style] (fn [x] (if x (keyword x))))
+                                   (update-in [:verbosity] (fn [x] (or x 1)))))
+                            (catch Exception e#
+                              (if ~watch?
+                                (println (.getMessage e#))
+                                (throw e#))))]
+                      ;; TODO: warnings
+                      )))]
          (if ~watch?
            @(watchtower.core/watcher
              ~source-paths

@@ -50,3 +50,25 @@ a {
 
 (deftest compile-material-design-lite
   (is (:output (sass-compile "@import \"material-design-lite/src/material-design-lite\";" {}))))
+
+(deftest sass-compile-error
+  (is (thrown? clojure.lang.ExceptionInfo (sass-compile "foosdfsdf%;" {})))
+
+  (try
+    (sass-compile "foosdfsdf%;" {})
+    (catch Exception e
+      (let [error (ex-data e)]
+        (is (= {:status 1
+                :file "stdin"
+                :line 1
+                :column 1
+                :message "Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\""
+                :formatted "Error: Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\"\n        on line 1 of stdin\n>> foosdfsdf%;\n   ^\n"
+                :type :sass4clj.core/error} error))))))
+
+(def warning-file (doto (File/createTempFile "sass4clj" "warning-test.scss")
+                    (spit "@warn \"test\";")))
+
+(deftest sass-compile-warning
+  (is (= nil
+         (first (:warnings (sass-compile warning-file {}))))))

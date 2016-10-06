@@ -83,15 +83,27 @@
                   :let [input-path (.getPath (core/tmp-file f))
                         output-rel-path (string/replace (core/tmp-path f) #"\.(scss|sass)$" ".css")
                         output-path (.getPath (io/file output-dir output-rel-path))]]
-            (let [{:keys [error]}
-                  (pod/with-call-in @p
-                    (sass4clj.core/sass-compile-to-file
-                      ~input-path
-                      ~output-path
-                      {:verbosity ~(deref util/*verbosity*)
-                       :output-style ~output-style}))]
+            (let [{:keys [warnings error]}
+                  (pod/with-eval-in @p
+                    (require 'sass4clj.core)
+                    (try
+                      (sass4clj.core/sass-compile-to-file
+                        ~input-path
+                        ~output-path
+                        {:verbosity ~(deref util/*verbosity*)
+                         :output-style ~output-style})
+                      (catch Exception e#
+                        (let [data# (ex-data e#)]
+                          (if (= :sass4clj.core/error (:type data#))
+                            {:error data#}
+                            (throw e#))))))]
+
+              ;; minimal stack trace and no data -> shorter message
               (when error
-                (throw (Exception. (fixed-message error)))))))
+                (throw (Exception. (fixed-message error))))
+
+              ;; TODO: warnings
+              )))
         (-> fileset
             (core/add-resource output-dir)
             core/commit!)))))

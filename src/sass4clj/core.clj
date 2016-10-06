@@ -133,7 +133,8 @@
         {:output (.getCss output)
          :source-map (.getSourceMap output)})
       (catch CompilationException e
-        {:error (json/parse-string (.getErrorJson e) true)}))))
+        (throw (ex-info (.getMessage e) (assoc (json/parse-string (.getErrorJson e) true)
+                                               :type ::error)))))))
 
 (defn sass-compile-to-file
   "Arguments:
@@ -149,10 +150,9 @@
         output-file (io/file output-path)
         source-map-name (if source-map (str output-path ".map"))
         source-map-output (io/file (str output-path ".map"))
-        {:keys [output source-map error]} (sass-compile input-file (assoc options :source-map-path source-map-name))]
+        {:keys [output source-map] :as result} (sass-compile input-file (assoc options :source-map-path source-map-name))]
     (when output
       (io/make-parents output-file)
       (spit output-file output)
       (when source-map (spit source-map-output source-map)))
-    (if error
-      {:error error})))
+    result))
