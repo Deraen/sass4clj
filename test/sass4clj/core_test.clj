@@ -51,13 +51,13 @@ a {
 (spit local-test-file (str "@import \"" (.getName test-file) "\";"))
 
 (deftest sass-compile-test
-  (is (= {:output css :source-map nil}
+  (is (= {:output css :source-map nil :warnings []}
          (sass-compile test-file {})))
 
-  (is (= {:output css :source-map nil}
+  (is (= {:output css :source-map nil :warnings []}
          (sass-compile sass {})))
 
-  (is (= {:output css :source-map nil}
+  (is (= {:output css :source-map nil :warnings []}
          (sass-compile local-test-file {}))))
 
 (deftest sass-compile-source-map-test
@@ -96,5 +96,5 @@ a {
                     (spit "@warn \"test\";")))
 
 (deftest sass-compile-warning
-  (is (= nil
+  (is (= "test"
          (first (:warnings (sass-compile warning-file {}))))))

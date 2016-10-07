@@ -9,7 +9,8 @@
     [java.net URI]
     [java.util Collection Collections]
     [io.bit3.jsass CompilationException Options Output OutputStyle]
-    [io.bit3.jsass.importer Import Importer]))
+    [io.bit3.jsass.importer Import Importer]
+    [sass4clj.impl WarningHandler]))
 
 (defn find-local-file [file current-dir]
   (let [f (io/file current-dir file)]
@@ -102,9 +103,10 @@
    :compressed OutputStyle/COMPRESSED})
 
 (defn- build-options
-  [{:keys [source-paths output-style source-map precision]}]
+  [{:keys [source-paths output-style source-map precision]} warning-handler]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
+    (.. opts (getFunctionProviders) (add warning-handler))
     ;; Hardcode to use Unix newlines, mostly because that's what the tests use
     (.setLinefeed opts "\n")
     (doseq [source-path source-paths]
@@ -137,14 +139,16 @@
     (try
       (let [ctx {:asset-map (webjars/asset-map)}
             compiler (io.bit3.jsass.Compiler.)
-            opts (build-options options)
+            warning-handler (WarningHandler.)
+            opts (build-options options warning-handler)
             _ (doto (.getImporters opts)
                 (.add (custom-sass-importer ctx)))
             output (if (string? input)
                      (.compileString compiler input opts)
                      (.compileFile compiler (.toURI input) nil opts))]
         {:output (.getCss output)
-         :source-map (if source-map (.getSourceMap output))})
+         :source-map (if source-map (.getSourceMap output))
+         :warnings (.getWarnings warning-handler)})
       (catch CompilationException e
         (throw (ex-info (.getMessage e) (assoc (json/parse-string (.getErrorJson e) true)
                                                :type ::error)))))))

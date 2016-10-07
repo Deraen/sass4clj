@@ -71,8 +71,8 @@
                               (if ~watch?
                                 (println (.getMessage e#))
                                 (throw e#))))]
-                      ;; TODO: warnings
-                      )))]
+                      (doseq [message# (:warnings result#)]
+                        (println (format "WARN: %s %s\n" message#))))))]
          (if ~watch?
            @(watchtower.core/watcher
              ~source-paths

@@ -25,7 +25,8 @@
   pom {:version     +version+
        :url         "https://github.com/deraen/sass4clj"
        :scm         {:url "https://github.com/deraen/sass4clj"}
-       :license     {"Eclipse Public License" "http://www.eclipse.org/legal/epl-v10.html"}})
+       :license     {"Eclipse Public License" "http://www.eclipse.org/legal/epl-v10.html"}}
+  aot {:namespace #{'sass4clj.impl.warning-handler}})
 
 (defn with-files
   "Runs middleware with filtered fileset and merges the result back into complete fileset."
@@ -63,6 +64,7 @@
     (fn [x] (and (re-find #"sass4clj" (tmp-path x))
                  (not (re-find #"leiningen" (tmp-path x)))))
     (comp
+     (aot)
      (pom
       :project 'deraen/sass4clj
       :description "Clojure wrapper for jsass")
@@ -94,6 +96,7 @@
 (deftask dev []
   (comp
    (watch)
+   (aot)
    (repl :server true)
    (build)
    (target)))
@@ -106,10 +109,12 @@
 (deftask autotest []
   (comp
     (watch)
+    (aot)
     (alt-test)))
 
 (deftask run-tests []
   (comp
+    (aot)
     (write-version-file :namespace 'deraen.boot-sass.version)
     (write-version-file :namespace 'leiningen.sass4clj.version)
     (alt-test :fail true)))

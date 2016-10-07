@@ -107,8 +107,9 @@
               (when error
                 (throw (Exception. (fixed-message error))))
 
-              ;; TODO: warnings
-              )))
+              (swap! core/*warnings* + (count warnings))
+              (doseq [message warnings]
+                (util/warn "WARN: %s\n" message)))))
         (-> fileset
             (core/add-resource output-dir)
             core/commit!)))))
