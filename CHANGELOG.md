@@ -1,6 +1,6 @@
-## Unreleased
+## 0.3.0 (18.10.2016)
 
-**[compare](https://github.com/Deraen/sass4clj/compare/0.2.1...master)**
+**[compare](https://github.com/Deraen/sass4clj/compare/0.2.1...0.3.0)**
 
 - Run tests on Windows CI
 - Update to latest jsass ([#6](https://github.com/Deraen/sass4clj/pull/6))
