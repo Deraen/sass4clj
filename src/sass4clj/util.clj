@@ -11,7 +11,10 @@
   [verbosity args]
   (when (>= *verbosity* verbosity)
     (binding [*out* *err*]
-      (apply printf args) (flush))))
+      (print (if (seq (rest args))
+               (apply format args)
+               (first args)))
+      (flush))))
 
 (defn dbug [& more] (print* 2 more))
 (defn info [& more] (print* 1 more))
