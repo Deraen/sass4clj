@@ -65,6 +65,6 @@ dependency to your Leiningen dev profile.
 
 ## License
 
-Copyright © 2014-2016 Juho Teperi
+Copyright © 2014-2017 Juho Teperi
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
