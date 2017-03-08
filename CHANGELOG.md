@@ -1,3 +1,9 @@
+## 0.3.1 (8.3.2017)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.3.0...0.3.1)**
+
+- Fixed a bad macro in Leiningen plugin which broke less4clj with Clojure 1.9-alpha14
+
 ## 0.3.0 (18.10.2016)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.2.1...0.3.0)**
