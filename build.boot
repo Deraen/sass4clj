@@ -4,18 +4,18 @@
   :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
   :source-paths #{"test" "test-resources"}
   :dependencies   '[[org.clojure/clojure "1.8.0" :scope "provided"]
-                    [boot/core "2.6.0" :scope "provided"]
-                    [metosin/boot-alt-test "0.1.2" :scope "test"]
-                    [io.bit3/jsass "5.3.0"]
-                    [cheshire "5.6.3"]
+                    [boot/core "2.7.1" :scope "provided"]
+                    [metosin/boot-alt-test "0.3.0" :scope "test"]
+                    [io.bit3/jsass "5.4.3"]
+                    [cheshire "5.7.0"]
 
                     [org.webjars/webjars-locator "0.32"]
                     ;; Webjars-locator uses logging
-                    [org.slf4j/slf4j-nop "1.7.21" :scope "test"]
+                    [org.slf4j/slf4j-nop "1.7.24" :scope "test"]
 
                     ;; For testing the webjars asset locator implementation
                     [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]
-                    [org.webjars.bower/material-design-lite "1.2.1" :scope "test"]
+                    [org.webjars.bower/material-design-lite "1.3.0" :scope "test"]
                     ;; Alt test will load any ns?
                     [leiningen "2.7.1" :scope "test"]])
 
@@ -103,13 +103,15 @@
    (build)
    (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
 
-(deftask autotest []
-  (comp
-    (watch)
-    (alt-test)))
+(ns-unmap *ns* 'test)
 
-(deftask run-tests []
+(deftask test []
   (comp
     (write-version-file :namespace 'deraen.boot-sass.version)
     (write-version-file :namespace 'leiningen.sass4clj.version)
-    (alt-test :fail true)))
+    (alt-test :report 'eftest.report.pretty/report)))
+
+(deftask autotest []
+  (comp
+    (watch)
+    (test)))
