@@ -9,4 +9,4 @@ cache:
   - C:\Users\appveyor\.boot\cache
   - C:\Users\appveyor\bin
 test_script:
-  - boot run-tests
+  - boot test
