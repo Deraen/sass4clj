@@ -53,7 +53,7 @@
   (let [project' (project/merge-profiles project [sass4j-profile])]
     (eval-in-project
       project'
-      `(let [f# (fn compile-sass [& ~'_]
+      `(let [f# (fn ~'compile-sass [& ~'_]
                   (doseq [[path# relative-path#] ~(vec (find-main-files source-paths))
                           :let [output-rel-path# (string/replace relative-path# #"\.(sass|scss)$" ".css")
                                 output-path#     (.getPath (io/file ~target-path output-rel-path#))]]
