@@ -20,7 +20,7 @@
   (by-pre ["_"]
           (->> fs
                core/input-files
-               (core/by-ext [".scss" ".sass"]))
+               (core/by-ext [".main.scss" ".main.sass"]))
           true))
 
 (defn- find-relative-path [dirs filepath]
@@ -83,7 +83,7 @@
           (util/info "Compiling {sass}... %d changed files.\n" (count sources))
           (doseq [f (find-mainfiles fileset)
                   :let [input-path (.getPath (core/tmp-file f))
-                        output-rel-path (string/replace (core/tmp-path f) #"\.(scss|sass)$" ".css")
+                        output-rel-path (string/replace (core/tmp-path f) #"\.main\.(scss|sass)$" ".css")
                         output-path (.getPath (io/file output-dir output-rel-path))]]
             (let [{:keys [warnings error]}
                   (pod/with-eval-in @p
