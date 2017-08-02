@@ -1,23 +1,21 @@
-(def +version+ "0.3.1")
+(def +version+ "0.3.2-SNAPSHOT")
 
 (set-env!
   :resource-paths #{"src" "boot-sass/src" "lein-sass4clj/src"}
   :source-paths #{"test" "test-resources"}
   :dependencies   '[[org.clojure/clojure "1.8.0" :scope "provided"]
                     [boot/core "2.7.1" :scope "provided"]
-                    [metosin/boot-alt-test "0.3.0" :scope "test"]
-                    [io.bit3/jsass "5.4.3"]
-                    [cheshire "5.7.0"]
+                    [metosin/boot-alt-test "0.3.2" :scope "test"]
+                    [io.bit3/jsass "5.5.2"]
+                    [cheshire "5.7.1"]
 
-                    [org.webjars/webjars-locator "0.32"]
+                    [org.webjars/webjars-locator "0.32-1"]
                     ;; Webjars-locator uses logging
-                    [org.slf4j/slf4j-nop "1.7.24" :scope "test"]
+                    [org.slf4j/slf4j-nop "1.7.25" :scope "test"]
 
                     ;; For testing the webjars asset locator implementation
-                    [org.webjars.bower/bootstrap "4.0.0-alpha" :scope "test"]
-                    [org.webjars.bower/material-design-lite "1.3.0" :scope "test"]
-                    ;; Alt test will load any ns?
-                    [leiningen "2.7.1" :scope "test"]])
+                    [org.webjars.bower/bootstrap "4.0.0-alpha.6" :scope "test"]
+                    [org.webjars.bower/material-design-lite "1.3.0" :scope "test"]])
 
 (require '[metosin.boot-alt-test :refer [alt-test]])
 
