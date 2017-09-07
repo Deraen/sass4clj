@@ -23,7 +23,34 @@
   (is (= "foo%20bar/xxx" (join-url "foo%20bar" "xxx")))
   (is (= "a/d.less" (join-url "a/b/c" "../../d.less"))))
 
-(def sass
+(deftest with-underscore-test
+  (is (= ["foo.scss" "_foo.scss"]
+         (with-underscore "foo.scss")))
+  (is (= ["_foo.scss"]
+         (with-underscore "_foo.scss")))
+  (is (= ["foo/bar.scss" "foo/_bar.scss"]
+         (with-underscore "foo/bar.scss")))
+  (is (= ["foo/_bar.scss"]
+         (with-underscore "foo/_bar.scss"))))
+
+(deftest possible-names-test
+  (is (= ["foo.scss" "_foo.scss"]
+         (possible-names "foo.scss")))
+  (is (= ["foo/bar.scss" "foo/_bar.scss"]
+         (possible-names "foo/bar.scss")))
+  (is (= ["_foo.scss"]
+         (possible-names "_foo.scss")))
+  (is (= ["foo.sass" "_foo.sass"]
+         (possible-names "foo.sass")))
+  (is (= ["foo.css"]
+         (possible-names "foo.css")))
+  (is (= ["foo.scss" "_foo.scss" "foo.sass" "_foo.sass" "foo.css"]
+         (possible-names "foo"))))
+
+(def sass-file (File/createTempFile "sass4clj" "sass-file.sass"))
+(def scss-file (File/createTempFile "sass4clj" "scss-file.scss"))
+
+(def scss-code
 "$test: #fff;
 
 @import \"url.css\";
@@ -32,7 +59,17 @@
 
 a { color: $test;}")
 
-(def css
+(def sass-code
+"$test: red;
+
+@import \"url.css\"
+@import \"foo\"
+@import \"bar\"
+
+h1
+  color: $test")
+
+(def scss-css
 "@import url(url.css);
 .from-scss {
   font-size: 12px; }
@@ -44,25 +81,44 @@ a {
   color: #fff; }
 ")
 
-(def test-file (File/createTempFile "sass4clj" "test.scss"))
-(spit test-file sass)
+(def sass-css
+"@import url(url.css);
+.from-scss {
+  font-size: 12px; }
 
-(def local-test-file (File/createTempFile "sass4clj" "local.scss"))
-(spit local-test-file (str "@import \"" (.getName test-file) "\";"))
+.from-css {
+  color: black; }
+
+h1 {
+  color: red; }
+")
+
+(spit scss-file scss-code)
+(spit sass-file sass-code)
+
+(def local-import-file (File/createTempFile "sass4clj" "local.scss"))
+(spit local-import-file (str "@import \"" (.getName scss-file) "\";"))
 
 (deftest sass-compile-test
-  (is (= {:output css :source-map nil}
-         (sass-compile test-file {})))
+  (is (= {:output scss-css :source-map nil}
+         (sass-compile scss-file {})))
 
-  (is (= {:output css :source-map nil}
-         (sass-compile sass {})))
+  (is (= {:output sass-css :source-map nil}
+         (sass-compile sass-file {})))
 
-  (is (= {:output css :source-map nil}
-         (sass-compile local-test-file {}))))
+  (is (= {:output scss-css :source-map nil}
+         (sass-compile scss-code {})))
+
+  ;; When compling string, syntax can't be detected from file name
+  (is (= {:output sass-css :source-map nil}
+         (sass-compile sass-code {:set-indented-syntax-src true})))
+
+  (is (= {:output scss-css :source-map nil}
+         (sass-compile local-import-file {}))))
 
 (deftest sass-compile-source-map-test
   (let [out-file (File/createTempFile "sass4clj" "main.css")
-        {:keys [output source-map]} (sass-compile-to-file local-test-file out-file {:source-map true})]
+        {:keys [output source-map]} (sass-compile-to-file local-import-file out-file {:source-map true})]
     (is (= (str "/*# sourceMappingURL=" (.getName out-file) ".map */")
            (last (string/split output #"\n"))))
 

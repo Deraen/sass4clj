@@ -11,10 +11,13 @@
     [io.bit3.jsass CompilationException Options Output OutputStyle]
     [io.bit3.jsass.importer Import Importer]))
 
-(defn find-local-file [file current-dir]
-  (let [f (io/file current-dir file)]
-    (if (.exists f)
-      [(.getPath f) f])))
+(defn find-local-file [names current-dir]
+  (some
+    (fn [name]
+      (let [f (io/file current-dir name)]
+        (if (.exists f)
+          [(.getPath f) f])))
+    names))
 
 (defn normalize-url
   "Simple URL normalization logic for import paths. Can normalize
@@ -39,31 +42,41 @@
 (defn join-url [& parts]
   (normalize-url (string/join "/" parts)))
 
-(defn find-resource [url]
-  (if url
-    (case (.getProtocol url)
-      "file"
-      [(.toString url) url]
+(defn find-resource [names]
+  (some (fn [name]
+          (if-let [url (io/resource name)]
+            (case (.getProtocol url)
+              "file"
+              [(.toString url) url]
 
-      "jar"
-      (let [jar-url (.openConnection url)
-            name    (.getEntryName jar-url)]
-        (util/dbug "Found %s from resources\n" url)
-        [name url]))))
+              "jar"
+              (let [jar-url (.openConnection url)
+                    entry   (.getEntryName jar-url)]
+                ; (util/dbug "Found %s from resources\n" url)
+                [entry url]))))
+        names))
 
-(defn find-webjars [ctx file]
-  (when-let [path (get (:asset-map ctx) file)]
-    (util/dbug "found %s at webjars\n" path)
-    (find-resource (io/resource path))))
+(defn find-webjars [ctx names]
+  (some (fn [name]
+          (when-let [path (get (:asset-map ctx) name)]
+            (util/dbug "found %s at webjars\n" path)
+            (find-resource [path])))
+        names))
 
-(defn add-ext [name]
-  (if (.endsWith name ".scss")
-    name
-    (str name ".scss")))
-
-(defn add-underscore [url]
+(defn with-underscore [url]
   (let [parts (string/split url #"/")]
-    (string/join "/" (conj (vec (butlast parts)) (str "_" (last parts))))))
+    (cond-> [url]
+      (not (.startsWith (last parts) "_")) (conj (string/join "/" (conj (vec (butlast parts)) (str "_" (last parts))))))))
+
+(defn possible-names [name]
+  (let [scss? (.endsWith name ".scss")
+        sass? (.endsWith name ".sass")
+        css? (.endsWith name ".css")
+        has-ext? (or scss? sass? css?)]
+    (cond-> []
+       (or (not has-ext?) scss?) (into (with-underscore (if scss? name (str name ".scss"))))
+       (or (not has-ext?) sass?) (into (with-underscore (if sass? name (str name ".sass"))))
+       (or (not has-ext?) css?) (conj (if css? name (str name ".css"))))))
 
 (defn custom-sass-importer [ctx]
   (reify
@@ -71,26 +84,17 @@
     (^Collection apply [this ^String import-url ^Import prev]
       ; (util/info "Import: %s\n" import-url)
       ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
-      (let [url (add-ext import-url)
-            css-url (if-not (.endsWith import-url ".scss")
-                      (str import-url ".css"))
+      (let [;; Generates different possibilies of names with _ and extensions added
+            names (possible-names import-url)
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
         ; (util/info "Parent: %s\n" parent)
+        ; (util/info "Names: %s\n" names)
         (when-let [[found-absolute-uri uri]
-                   (or (find-local-file (add-underscore url) parent)
-                       (find-local-file url parent)
-                       (if css-url (find-local-file css-url parent))
-                       (find-resource (io/resource (add-underscore url)))
-                       (find-resource (io/resource url))
-                       (if css-url (find-resource (io/resource css-url)))
-                       (find-resource (io/resource (add-underscore (join-url parent url))))
-                       (find-resource (io/resource (join-url parent url)))
-                       (if css-url (find-resource (io/resource (join-url parent css-url))))
-                       (find-webjars ctx (add-underscore url))
-                       (find-webjars ctx url)
-                       (if css-url (find-webjars ctx css-url))
-                       )]
-          ; (util/info "Import: %s, result: %s\n" import-url found-absolute-uri)
+                   (or (find-local-file names parent)
+                       (find-resource names)
+                       (find-resource (map #(join-url parent %) names))
+                       (find-webjars ctx names))]
+          (util/info "Import: %s, %s, result: %s\n" import-url uri found-absolute-uri)
           ; jsass doesn't know how to read content from other than files?
           (Collections/singletonList
             (Import. import-url found-absolute-uri (slurp uri))))))))
@@ -102,7 +106,7 @@
    :compressed OutputStyle/COMPRESSED})
 
 (defn- build-options
-  [{:keys [source-paths output-style source-map precision]}]
+  [{:keys [source-paths output-style source-map precision set-indented-syntax-src]}]
   (let [opts (Options.)
         include-paths (.getIncludePaths opts)]
     ;; Hardcode to use Unix newlines, mostly because that's what the tests use
@@ -120,6 +124,7 @@
       (.setSourceMapFile opts (URI. "placeholder.css.map")))
     (when precision
       (.setPrecision opts precision))
+    (.setIsIndentedSyntaxSrc opts (true? set-indented-syntax-src))
     opts))
 
 (defn sass-compile
