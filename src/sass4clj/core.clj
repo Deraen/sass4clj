@@ -68,15 +68,23 @@
     (cond-> [url]
       (not (.startsWith (last parts) "_")) (conj (string/join "/" (conj (vec (butlast parts)) (str "_" (last parts))))))))
 
+(defn remove-tilde-start [names]
+  (mapcat (fn [name]
+            (if (.startsWith name "~")
+              [name (subs name 1)]
+              [name]))
+          names))
+
 (defn possible-names [name]
   (let [scss? (.endsWith name ".scss")
         sass? (.endsWith name ".sass")
         css? (.endsWith name ".css")
         has-ext? (or scss? sass? css?)]
-    (cond-> []
-       (or (not has-ext?) scss?) (into (with-underscore (if scss? name (str name ".scss"))))
-       (or (not has-ext?) sass?) (into (with-underscore (if sass? name (str name ".sass"))))
-       (or (not has-ext?) css?) (conj (if css? name (str name ".css"))))))
+    (remove-tilde-start
+      (cond-> []
+        (or (not has-ext?) scss?) (into (with-underscore (if scss? name (str name ".scss"))))
+        (or (not has-ext?) sass?) (into (with-underscore (if sass? name (str name ".sass"))))
+        (or (not has-ext?) css?) (conj (if css? name (str name ".css")))))))
 
 (defn custom-sass-importer [ctx]
   (reify
@@ -94,8 +102,9 @@
                        (find-resource names)
                        (find-resource (map #(join-url parent %) names))
                        (find-webjars ctx names))]
-          (util/info "Import: %s, %s, result: %s\n" import-url uri found-absolute-uri)
+          ; (util/info "Import: %s, %s, result: %s\n" import-url uri found-absolute-uri)
           ; jsass doesn't know how to read content from other than files?
+          ;; FIXME: If extension is sass, should convert the content to scss
           (Collections/singletonList
             (Import. import-url found-absolute-uri (slurp uri))))))))
 

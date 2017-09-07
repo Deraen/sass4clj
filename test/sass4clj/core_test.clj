@@ -45,7 +45,13 @@
   (is (= ["foo.css"]
          (possible-names "foo.css")))
   (is (= ["foo.scss" "_foo.scss" "foo.sass" "_foo.sass" "foo.css"]
-         (possible-names "foo"))))
+         (possible-names "foo")))
+  (is (= ["~bootstrap/foo/bar.scss" "bootstrap/foo/bar.scss"
+          "~bootstrap/foo/_bar.scss" "bootstrap/foo/_bar.scss"
+          "~bootstrap/foo/bar.sass" "bootstrap/foo/bar.sass"
+          "~bootstrap/foo/_bar.sass" "bootstrap/foo/_bar.sass"
+          "~bootstrap/foo/bar.css" "bootstrap/foo/bar.css"]
+         (possible-names "~bootstrap/foo/bar"))) )
 
 (def sass-file (File/createTempFile "sass4clj" "sass-file.sass"))
 (def scss-file (File/createTempFile "sass4clj" "scss-file.scss"))
@@ -128,7 +134,10 @@ h1 {
     (is (string? source-map))))
 
 (deftest import-werbjars
-  (is (:output (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 3}))))
+  (is (:output (sass-compile "@import \"bootstrap/scss/bootstrap.scss\";" {:verbosity 0})))
+
+  (testing "webpack style import with ~, refering to Node package"
+    (is (:output (sass-compile "@import \"~bootstrap/scss/bootstrap.scss\";" {:verbosity 0})))))
 
 (deftest compile-material-design-lite
   (is (:output (sass-compile "@import \"material-design-lite/src/material-design-lite\";" {}))))

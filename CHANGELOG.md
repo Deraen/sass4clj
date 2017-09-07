@@ -1,3 +1,10 @@
+## Unreleased
+
+- Support Webpack style import paths, which support starting the path with `~`
+when referring to Node packages.
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...master)**
+
 ## 0.3.1 (8.3.2017)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.3.0...0.3.1)**
