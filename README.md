@@ -15,6 +15,7 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 - Jsass features
     - Requires Java 1.8
     - Linux & Windows builds are automatically tested
+    - (Doesn't work on Alpine based Docker images)
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 - Assumes that files starting with `_` are [partial files](http://sass-lang.com/guide) and should not be compiled into CSS files.
