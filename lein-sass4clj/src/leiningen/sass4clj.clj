@@ -24,10 +24,15 @@
 (def sass4j-profile {:dependencies [['deraen/sass4clj +version+]
                                     ['watchtower "0.1.1"]]})
 
+(defn- make-subproject [project]
+  (with-meta
+    (dissoc project :prep-tasks)
+    (meta project)))
+
 ; From lein-cljsbuild
 (defn- eval-in-project [project form requires]
   (leval/eval-in-project
-    project
+    (make-subproject project)
     ; Without an explicit exit, the in-project subprocess seems to just hang for
     ; around 30 seconds before exiting.  I don't fully understand why...
     `(try
