@@ -8,7 +8,7 @@
             [clojure.string :as string]
             [sass4clj.version :refer [+version+]]))
 
-(def sass4j-profile {:dependencies [['watchtower "0.1.1"]
+(def sass4j-profile {:dependencies [['hawk "0.2.11"]
                                     ['deraen/sass4clj +version+]]})
 
 ; From lein-cljsbuild
@@ -31,9 +31,8 @@
   [project options]
   (eval-in-project
     (project/merge-profiles project [sass4j-profile])
-    `(cond-> (sass4clj.api/build ~options)
-       ~(:auto options) deref)
-    '(require 'sass4clj.api 'watchtower.core)))
+    `(sass4clj.api/build ~options)
+    '(require 'sass4clj.api)))
 
 ;; For docstrings
 

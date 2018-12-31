@@ -40,5 +40,4 @@ Options:
     (cond
       errors (println (str/join "\n" errors))
       help (println (help-text summary))
-      :else (cond-> (api/build options)
-              (:auto options) deref))))
+      :else (api/build options))))

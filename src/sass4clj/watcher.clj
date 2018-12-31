@@ -1,13 +1,16 @@
 (ns sass4clj.watcher
-  (:require [watchtower.core :as wt]))
+  (:require [hawk.core :as hawk]))
 
 (defn start [source-paths f]
-  (wt/watcher
-     source-paths
-     (wt/rate 100)
-     (wt/file-filter wt/ignore-dotfiles)
-     (wt/file-filter (wt/extensions :scss :sass))
-     (wt/on-change f)))
+  (f)
+  (hawk/watch!
+    [{:paths source-paths
+      :filter (fn [_ {:keys [file]}]
+                (and (not (.startsWith (.getName file) "."))
+                     (or (.endsWith (.getName file) ".scss")
+                         (.endsWith (.getName file) ".sass")
+                         (.endsWith (.getName file) ".css"))))
+      :handler f}]))
 
 (defn stop [watcher]
-  (future-cancel watcher))
+  (hawk/stop! watcher))

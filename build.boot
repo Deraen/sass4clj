@@ -10,7 +10,7 @@
                     [cheshire "5.7.1"]
 
                     [org.webjars/webjars-locator "0.32-1"]
-                    [watchtower "0.1.1"]
+                    [hawk "0.2.11"]
                     [org.clojure/tools.cli "0.4.1"]
 
                     [com.stuartsierra/component "0.3.2" :scope "test"]
