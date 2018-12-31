@@ -20,17 +20,25 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 - Assumes that files starting with `_` are [partial files](http://sass-lang.com/guide) and should not be compiled into CSS files.
 
-## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads](https://jarkeeper.com/deraen/boot-sass/downloads.svg)](https://jarkeeper.com/deraen/boot-sass)
+## Boot
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
 * For each `.sass` or `.scss` file not starting with `_` in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
-## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads](https://jarkeeper.com/deraen/lein-sass4clj/downloads.svg)](https://jarkeeper.com/deraen/lein-sass4clj)
+## Leiningen
 
 * Provides the `sass4clj` task
 * For each `.sass` or `.scss` file not starting with `_` in source-dirs creates equivalent `.css` file.
 * Check `lein help sass4clj` for options.
+
+## Clj
+
+Test in the repository:
+
+`clj -m sass4clj.main --source-paths test-resources`
+
+Check `clj -m sass4clj.main --help` for options.
 
 ## Import load order
 

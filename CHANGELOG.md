@@ -2,6 +2,13 @@
 
 - Support Webpack style import paths, which support starting the path with `~`
 when referring to Node packages.
+- **Breaking**:
+    - Separate `lein-sass4clj` and `boot-sass4clj` packages have been discontinued,
+    and both are now packaged into `sass4clj`.
+- Sass4clj now contains main namespace for `clj` use
+- Sass4clj new has `sass4clj.api` namespace with easy to use `start` and `stop` functions
+- Add [Integrant](https://github.com/weavejester/integrant) namespace `sass4clj.integrant` namespace
+- Add [Component](https://github.com/stuartsierra/component) namespace `sass4clj.component` namespace
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...master)**
 
