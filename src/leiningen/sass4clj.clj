@@ -5,31 +5,15 @@
             [leiningen.core.main :as main]
             [leiningen.help :as help]
             [clojure.java.io :as io]
-            [clojure.string :as string]
             [sass4clj.version :refer [+version+]]))
 
 (def sass4j-profile {:dependencies [['hawk "0.2.11"]
                                     ['deraen/sass4clj +version+]]})
 
-; From lein-cljsbuild
-(defn- eval-in-project [project form requires]
-  (leval/eval-in-project
-    project
-    ; Without an explicit exit, the in-project subprocess seems to just hang for
-    ; around 30 seconds before exiting.  I don't fully understand why...
-    `(try
-       ~form
-       (System/exit 0)
-       (catch Exception e#
-         (do
-           (.printStackTrace e#)
-           (System/exit 1))))
-    requires))
-
 (defn- run-compiler
   "Run the sasscss compiler."
   [project options]
-  (eval-in-project
+  (leval/eval-in-project
     (project/merge-profiles project [sass4j-profile])
     `(sass4clj.api/build ~options)
     '(require 'sass4clj.api)))
