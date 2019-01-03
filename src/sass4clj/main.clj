@@ -11,6 +11,9 @@
    ["-t" "--target-path TARGET" "The path where CSS files are written to"
     :default "target"]
    ["-s" "--source-map" "Enable source-maps for compiled CSS"]
+   [nil "--output-style STYLE" "Select output style, available styles are nested, compact, expanded and compressed."
+    :parse-fn (fn [s] (keyword s))
+    :validate [#{:nested :compact :expanded :compressed} "Invalid value"]]
    ["-v" "--verbosity LEVEL" "Set verbosity level, valid values are 1 and 2."
     :parse-fn (fn [s]
                 (Integer/parseInt s))

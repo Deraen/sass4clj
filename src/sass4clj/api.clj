@@ -52,8 +52,9 @@
 (s/def ::target-path string?)
 (s/def ::source-map boolean?)
 (s/def ::verbosity #{1 2})
+(s/def ::output-style #{:nested :compact :expanded :compressed})
 (s/def ::options (s/keys :req-un [::source-paths ::target-path]
-                         :opt-un [::auto ::help ::source-map ::verbosity]))
+                         :opt-un [::auto ::help ::source-map ::verbosity ::output-style]))
 
 (defn build [{:keys [source-paths auto] :as options}]
   (when-not (s/valid? ::options options)

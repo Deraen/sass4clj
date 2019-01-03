@@ -1,14 +1,16 @@
 ## Unreleased
 
-- Support Webpack style import paths, which support starting the path with `~`
-when referring to Node packages.
 - **Breaking**:
+    - Requires Clojure 1.9 (for spec)
     - Separate `lein-sass4clj` and `boot-sass4clj` packages have been discontinued,
     and both are now packaged into `sass4clj`.
 - Sass4clj now contains main namespace for `clj` use
 - Sass4clj new has `sass4clj.api` namespace with easy to use `start` and `stop` functions
 - Add [Integrant](https://github.com/weavejester/integrant) namespace `sass4clj.integrant` namespace
 - Add [Component](https://github.com/stuartsierra/component) namespace `sass4clj.component` namespace
+- Use [Hawk](https://github.com/wkf/hawk/) for watching for file changes, this should work better on OS X
+- Support Webpack style import paths, which support starting the path with `~`
+when referring to Node packages.
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...master)**
 
