@@ -5,7 +5,7 @@
             [leiningen.core.main :as main]
             [leiningen.help :as help]
             [clojure.java.io :as io]
-            [sass4clj.version :refer [+version+]]))
+            [leiningen.sass4clj.version :refer [+version+]]))
 
 (def sass4j-profile {:dependencies [['hawk "0.2.11"]
                                     ['deraen/sass4clj +version+]]})

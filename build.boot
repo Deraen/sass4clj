@@ -32,6 +32,23 @@
        :scm         {:url "https://github.com/deraen/sass4clj"}
        :license     {"Eclipse Public License" "http://www.eclipse.org/legal/epl-v10.html"}})
 
+(defn with-files
+  "Runs middleware with filtered fileset and merges the result back into complete fileset."
+  [p middleware]
+  (fn [next-handler]
+    (fn [fileset]
+      (let [merge-fileset-handler (fn [fileset']
+                                    (next-handler (commit! (assoc fileset :tree (merge (:tree fileset) (:tree fileset'))))))
+            handler (middleware merge-fileset-handler)
+            fileset (assoc fileset :tree (reduce-kv
+                                          (fn [tree path x]
+                                            (if (p x)
+                                              (assoc tree path x)
+                                              tree))
+                                          (empty (:tree fileset))
+                                          (:tree fileset)))]
+        (handler fileset)))))
+
 (deftask write-version-file
   [n namespace NAMESPACE sym "Namespace"]
   (let [d (tmp-dir!)]
@@ -47,14 +64,37 @@
 
 (deftask build []
   (comp
-    (write-version-file :namespace 'sass4clj.version)
-    (pom
-      :project 'deraen/sass4clj
-      :description "Clojure wrapper for jsass")
-    (aot
-      :namespace #{'sass4clj.main})
-    (jar :main 'sass4clj.main)
-    (install)))
+    (with-files
+      (fn [x] (and (re-find #"sass4clj" (tmp-path x))
+                   (not (re-find #"leiningen" (tmp-path x)))))
+      (comp
+        (pom
+          :project 'deraen/sass4clj
+          :description "Clojure wrapper for jsass")
+        (jar)
+        (install)))
+
+    (with-files
+      (fn [x] (re-find #"boot_sass" (tmp-path x)))
+      (comp
+        (pom
+          :project 'deraen/boot-sass
+          :description "Boot task to compile SASS"
+          :dependencies [])
+        (write-version-file :namespace 'deraen.boot-sass.version)
+        (jar)
+        (install)))
+
+    (with-files
+      (fn [x] (re-find #"leiningen" (tmp-path x)))
+      (comp
+        (pom
+          :project 'deraen/lein-sass4clj
+          :description "Leinigen task to compile SASS"
+          :dependencies [])
+        (write-version-file :namespace 'leiningen.sass4clj.version)
+        (jar)
+        (install)))))
 
 (deftask dev []
   (comp
