@@ -67,7 +67,6 @@ Add `:debug` as subtask argument to enable debugging output."
    (main/abort))
   ([project subtask & args]
    (let [args (set args)
-         project (remove-prep-tasks project)
          config (cond-> (:sass project)
                   (contains? args ":debug") (assoc :verbosity 2))]
      (case subtask
