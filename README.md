@@ -32,6 +32,14 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 * For each `.sass` or `.scss` file not starting with `_` in source-dirs creates equivalent `.css` file.
 * Check `lein help sass4clj` for options.
 
+## Clj
+
+Test in the repository:
+
+`clj -m sass4clj.main --source-paths test-resources`
+
+Check `clj -m sass4clj.main --help` for options.
+
 ## Import load order
 
 Loading order for `@import "{name}";` on file at `{path}`
