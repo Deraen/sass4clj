@@ -2,7 +2,8 @@
   (:require [sass4clj.watcher :as watcher]
             [sass4clj.core :as core]
             [clojure.java.io :as io]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s]
+            [clojure.string :as string]))
 
 (defn main-file? [file]
   (and (or (.endsWith (.getName file) ".scss")
@@ -33,7 +34,7 @@
             (try
               (core/sass-compile-to-file
                 path
-                (.getPath (io/file target-path relative-path))
+                (.getPath (io/file target-path (string/replace relative-path #"\.(scss|sass)$" ".css")))
                 (dissoc options :target-path :source-paths))
               (catch Exception e
                 (if auto
