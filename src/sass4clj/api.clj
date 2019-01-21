@@ -2,6 +2,7 @@
   (:require [sass4clj.watcher :as watcher]
             [sass4clj.core :as core]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.spec.alpha :as s]))
 
 (defn main-file? [file]
@@ -25,7 +26,9 @@
                                (if (:line warning)
                                  (str " at line " (:line warning) " character " (:char warning)))))))))
 
-(defn compile-sass [main-files {:keys [auto target-path] :as options}]
+
+
+(defn compile-sass [main-files {:keys [auto target-path extension] :as options}]
   (try
     (doseq [[path relative-path] main-files]
       (println (format "Compiling {sass}... %s" relative-path))
@@ -33,7 +36,7 @@
             (try
               (core/sass-compile-to-file
                 path
-                (.getPath (io/file target-path relative-path))
+                (str (.getPath (io/file target-path relative-path)) extension)
                 (dissoc options :target-path :source-paths))
               (catch Exception e
                 (if auto
@@ -50,11 +53,12 @@
 (s/def ::auto boolean?)
 (s/def ::help boolean?)
 (s/def ::target-path string?)
+(s/def ::extension (s/and string? #(str/starts-with? % ".")))
 (s/def ::source-map boolean?)
 (s/def ::verbosity #{1 2})
 (s/def ::output-style #{:nested :compact :expanded :compressed})
 (s/def ::options (s/keys :req-un [::source-paths ::target-path]
-                         :opt-un [::auto ::help ::source-map ::verbosity ::output-style]))
+                         :opt-un [::auto ::help ::source-map ::verbosity ::output-style ::extension]))
 
 (defn build [{:keys [source-paths auto] :as options}]
   (when-not (s/valid? ::options options)
