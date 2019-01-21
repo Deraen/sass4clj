@@ -10,11 +10,19 @@
 (def sass4j-profile {:dependencies [['hawk "0.2.11"]
                                     ['deraen/sass4clj +version+]]})
 
+(defn- remove-prep-tasks
+  "Get copy of project without prep tasks to avoid triggering infinite loops
+  when using sass4clj as a prep task."
+  [project]
+  (with-meta
+    (dissoc project :prep-tasks)
+    (meta project)))
+
 (defn- run-compiler
   "Run the sasscss compiler."
   [project options]
   (leval/eval-in-project
-    (project/merge-profiles project [sass4j-profile])
+    (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
     `(sass4clj.api/build ~options)
     '(require 'sass4clj.api)))
 
