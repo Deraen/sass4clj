@@ -19,20 +19,23 @@
     :parse-fn (fn [s]
                 (Integer/parseInt s))
     :validate [#{1 2} "Must be 1 or 2"]]
-   [nil "--source-paths PATHS" "List of LESS source paths, comma separated"
+   [nil "--source-paths PATHS" "List of SASS source paths, comma separated"
     :default ["src"]
+    :parse-fn (fn [x]
+                (str/split x #","))]
+   ["-i" "--inputs PATHS" "List of SASS main file paths, relative to source-path, comma separated"
     :parse-fn (fn [x]
                 (str/split x #","))]
    ["-c" "--config PATH" "EDN file to read config options from"]])
 
 (defn help-text [options-summary]
-(str "{less} CSS compiler.
+(str "{sass} CSS compiler.
 
 Usage: program-name [options]
 
-For each `.main.less` file in source-paths creates equivalent `.css` file.
-For example to create file `{target-path}/public/css/style.css` your less
-code should be at path `{source-path}/public/css/style.main.less`.
+If inputs option if given, compiles each file to same relative path in
+target-path. If inputs is not used, finds each `.scss` or `.sass` file,
+not starting with prefix `_`, in source-paths.
 
 If you are seeing SLF4J warnings, check https://github.com/Deraen/sass4clj#log-configuration
 

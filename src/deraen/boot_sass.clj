@@ -13,15 +13,22 @@
   [['deraen/sass4clj +version+]])
 
 (defn by-pre
-  [exts files & [negate?]]
-  ((core/file-filter #(fn [f] (.startsWith (.getName f) %))) exts files negate?))
+  [prefixes files & [negate?]]
+  ((core/file-filter (fn [prefix]
+                       (fn [f]
+                         (.startsWith (.getName f) prefix))))
+   prefixes files negate?))
 
-(defn- find-mainfiles [fs]
-  (by-pre ["_"]
-          (->> fs
-               core/input-files
-               (core/by-ext [".scss" ".sass"]))
-          true))
+(defn- find-mainfiles [fs inputs]
+  (if inputs
+    (->> fs
+         core/input-files
+         (core/by-path inputs))
+    (by-pre ["_"]
+            (->> fs
+                 core/input-files
+                 (core/by-ext [".scss" ".sass"]))
+            true)))
 
 (defn- find-relative-path [dirs filepath]
   (if-let [file (io/file filepath)]
@@ -66,6 +73,7 @@
   - :compressed"
   [s source-map  bool "Enable source-maps for compiled CSS."
    o output-style STYLE kw "Set output-style"
+   i inputs PATHS [str] "List of SCSS main file paths, relative to fileset"
    _ options VAL edn "Other options to sass4clj"]
   (let [output-dir  (core/tmp-dir!)
         p           (-> (core/get-env)
@@ -81,7 +89,7 @@
         (reset! prev fileset)
         (when (seq sources)
           (util/info "Compiling {sass}... %d changed files.\n" (count sources))
-          (doseq [f (find-mainfiles fileset)
+          (doseq [f (find-mainfiles fileset inputs)
                   :let [input-path (.getPath (core/tmp-file f))
                         output-rel-path (string/replace (core/tmp-path f) #"\.(scss|sass)$" ".css")
                         output-path (.getPath (io/file output-dir output-rel-path))]]

@@ -9,6 +9,7 @@
 - Use [Hawk](https://github.com/wkf/hawk/) for watching for file changes, this should work better on OS X
 - Support Webpack style import paths, which support starting the path with `~`
 when referring to Node packages.
+- Add `inputs` option which can be used to select main files
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...master)**
 

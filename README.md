@@ -23,13 +23,15 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 ## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads](https://jarkeeper.com/deraen/boot-sass/downloads.svg)](https://jarkeeper.com/deraen/boot-sass)
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
-* For each `.sass` or `.scss` file not starting with `_` in the fileset creates equivalent `.css` file.
+* Select main files using `inputs` option
+* or, for each `.sass` or `.scss` file not starting with `_` in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
 ## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads](https://jarkeeper.com/deraen/lein-sass4clj/downloads.svg)](https://jarkeeper.com/deraen/lein-sass4clj)
 
 * Provides the `sass4clj` task
-* For each `.sass` or `.scss` file not starting with `_` in source-dirs creates equivalent `.css` file.
+* Select main files using `inputs` option
+* or, for each `.sass` or `.scss` file not starting with `_` in source-dirs creates equivalent `.css` file.
 * Check `lein help sass4clj` for options.
 
 ## Clj
