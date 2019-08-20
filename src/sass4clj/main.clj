@@ -52,7 +52,7 @@ Config file options are merged over the default options, before CLI options."))
                       (edn/read-string (slurp (io/file (:config options)))))
         options (merge (cli/get-default-options cli-opts)
                        config-file
-                       options)]
+                       (dissoc options :config))]
     (cond
       errors (println (str/join "\n" errors))
       help (println (help-text summary))
