@@ -52,6 +52,7 @@ Options should be provided using `:sass` key in project map.
 Available options:
 :target-path          The path where CSS files are written to.
 :source-paths         Collection of paths where SASS files are read from.
+:inputs               Collection of main file paths, relative to source paths, to compile.
 :output-style         Possible types are :nested, :compact, :expanded and :compressed.
 :verbosity            Set verbosity level, valid values are 1 and 2.
 :source-map           Enable source-maps.
