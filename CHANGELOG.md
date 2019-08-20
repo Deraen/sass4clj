@@ -1,4 +1,4 @@
-## 0.0.0 (2019-08-20)
+## 0.4.0 (2019-08-20)
 
 - **Breaking**:
     - Requires Clojure 1.9 (for spec)
