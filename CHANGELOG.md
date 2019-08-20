@@ -1,4 +1,4 @@
-## Unreleased
+## 0.0.0 (2019-08-20)
 
 - **Breaking**:
     - Requires Clojure 1.9 (for spec)
@@ -11,7 +11,7 @@
 when referring to Node packages.
 - Add `inputs` option which can be used to select main files
 
-**[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...master)**
+**[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...0.4.0)**
 
 ## 0.3.1 (8.3.2017)
 
