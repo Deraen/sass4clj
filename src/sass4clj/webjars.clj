@@ -13,7 +13,7 @@
   "Create map of asset path to classpath resource url. Asset path is
   the resource url without webjars part."
   []
-  (->> (vals (.getFullPathIndex (WebJarAssetLocator.)))
+  (->> (.listAssets (WebJarAssetLocator.))
        (map (juxt asset-path identity))
        (into {})))
 

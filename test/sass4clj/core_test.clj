@@ -154,7 +154,7 @@ h1 {
                 :line 1
                 :column 1
                 :message "Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\""
-                :formatted "Error: Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\"\n        on line 1 of stdin\n>> foosdfsdf%;\n   ^\n"
+                :formatted "Error: Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\"\n        on line 1:1 of stdin\n>> foosdfsdf%;\n   ^\n"
                 :type :sass4clj.core/error} error))))))
 
 (def warning-file (doto (File/createTempFile "sass4clj" "warning-test.scss")

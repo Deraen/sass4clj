@@ -3,17 +3,17 @@
 (set-env!
   :resource-paths #{"src"}
   :source-paths #{"test" "test-resources"}
-  :dependencies   '[[org.clojure/clojure "1.9.0" :scope "provided"]
-                    [metosin/bat-test "0.4.0" :scope "test"]
+  :dependencies   '[[org.clojure/clojure "1.10.1" :scope "provided"]
+                    [metosin/bat-test "0.4.3" :scope "test"]
 
-                    [io.bit3/jsass "5.5.2"]
-                    [cheshire "5.7.1"]
+                    [io.bit3/jsass "5.9.2"]
+                    [cheshire "5.9.0"]
 
-                    [org.webjars/webjars-locator "0.32-1"]
+                    [org.webjars/webjars-locator "0.37"]
                     [hawk "0.2.11"]
-                    [org.clojure/tools.cli "0.4.1"]
+                    [org.clojure/tools.cli "0.4.2"]
 
-                    [com.stuartsierra/component "0.3.2" :scope "test"]
+                    [com.stuartsierra/component "0.4.0" :scope "test"]
                     [suspendable "0.1.1" :scope "test"]
                     [integrant "0.7.0" :scope "test"]
 
@@ -21,7 +21,7 @@
                     [org.slf4j/slf4j-nop "1.7.25" :scope "test"]
 
                     ;; For testing the webjars asset locator implementation
-                    [org.webjars.bower/bootstrap "4.0.0-alpha.6" :scope "test"]
+                    [org.webjars.bower/bootstrap "4.3.1" :scope "test"]
                     [org.webjars.bower/material-design-lite "1.3.0" :scope "test"]])
 
 (require '[metosin.bat-test :refer [bat-test]])
