@@ -1,3 +1,7 @@
+## 0.4.1 (2019-08-28)
+
+- Fix the Integrant namespace ([#30](https://github.com/Deraen/sass4clj/pull/30))
+
 ## 0.4.0 (2019-08-20)
 
 - **Breaking**:
