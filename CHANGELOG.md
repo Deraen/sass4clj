@@ -1,8 +1,18 @@
+## Unreleased
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.4.0...0.4.1)**
+
+- Support mixed Scss & Sass projects (include `.sass` files from `.scss` files) ([#22](https://github.com/Deraen/sass4clj/issues/22))
+
 ## 0.4.1 (2019-08-28)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.4.0...0.4.1)**
 
 - Fix the Integrant namespace ([#30](https://github.com/Deraen/sass4clj/pull/30))
 
 ## 0.4.0 (2019-08-20)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...0.4.0)**
 
 - **Breaking**:
     - Requires Clojure 1.9 (for spec)
@@ -14,8 +24,6 @@
 - Support Webpack style import paths, which support starting the path with `~`
 when referring to Node packages.
 - Add `inputs` option which can be used to select main files
-
-**[compare](https://github.com/Deraen/sass4clj/compare/0.3.1...0.4.0)**
 
 ## 0.3.1 (8.3.2017)
 
