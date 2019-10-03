@@ -8,7 +8,7 @@
   (:import
     [java.net URI]
     [java.util Collection Collections]
-    [io.bit3.jsass CompilationException Options Output OutputStyle]
+    [io.bit3.jsass CompilationException Options Output OutputStyle Sass2ScssOptions]
     [io.bit3.jsass.importer Import Importer]))
 
 (defn find-local-file [names current-dir]
@@ -86,6 +86,10 @@
         (or (not has-ext?) sass?) (into (with-underscore (if sass? name (str name ".sass"))))
         (or (not has-ext?) css?) (conj (if css? name (str name ".css")))))))
 
+(defn sass2scss [source]
+  (io.bit3.jsass.Compiler/sass2scss source (bit-xor Sass2ScssOptions/PRETTIFY2
+                                                    Sass2ScssOptions/KEEP_COMMENT)))
+
 (defn custom-sass-importer [ctx]
   (reify
     Importer
@@ -106,7 +110,10 @@
           ; jsass doesn't know how to read content from other than files?
           ;; FIXME: If extension is sass, should convert the content to scss
           (Collections/singletonList
-            (Import. import-url found-absolute-uri (slurp uri))))))))
+            (Import. import-url
+                     found-absolute-uri
+                     (cond-> (slurp uri)
+                       (.endsWith found-absolute-uri ".sass") (sass2scss)))))))))
 
 (def ^:private output-styles
   {:nested OutputStyle/NESTED

@@ -61,6 +61,7 @@
 
 @import \"url.css\";
 @import \"foo\";
+@import \"xyz\";
 @import \"bar\";
 
 a { color: $test;}")
@@ -70,6 +71,7 @@ a { color: $test;}")
 
 @import \"url.css\"
 @import \"foo\"
+@import \"xyz\"
 @import \"bar\"
 
 h1
@@ -79,6 +81,9 @@ h1
 "@import url(url.css);
 .from-scss {
   font-size: 12px; }
+
+.from-sass {
+  color: salmon; }
 
 .from-css {
   color: black; }
@@ -91,6 +96,9 @@ a {
 "@import url(url.css);
 .from-scss {
   font-size: 12px; }
+
+.from-sass {
+  color: salmon; }
 
 .from-css {
   color: black; }
