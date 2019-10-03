@@ -1,6 +1,6 @@
-## Unreleased
+## 0.5.0 (2019-10-03)
 
-**[compare](https://github.com/Deraen/sass4clj/compare/0.4.0...0.4.1)**
+**[compare](https://github.com/Deraen/sass4clj/compare/0.4.1...0.5.0)**
 
 - Support mixed Scss & Sass projects (include `.sass` files from `.scss` files) ([#22](https://github.com/Deraen/sass4clj/issues/22))
 
