@@ -39,7 +39,7 @@
               (core/sass-compile-to-file
                 path
                 (.getPath (io/file target-path (string/replace relative-path #"\.(scss|sass)$" ".css")))
-                (dissoc options :target-path :source-paths))
+                (dissoc options :target-path))
               (catch Exception e
                 (if auto
                   (println (.getMessage e))
@@ -65,13 +65,12 @@
 (defn build [{:keys [source-paths auto] :as options}]
   (when-not (s/valid? ::options options)
     (s/explain-out (s/explain-data ::options options)))
-  (let [options (dissoc options :source-paths)]
-    (if auto
-      (watcher/start source-paths (fn [& _]
-                                    (let [main-files (find-main-files source-paths options)]
-                                      (compile-sass main-files options))))
-      (let [main-files (find-main-files source-paths options)]
-        (compile-sass main-files options)))))
+  (if auto
+    (watcher/start source-paths (fn [& _]
+                                  (let [main-files (find-main-files source-paths options)]
+                                    (compile-sass main-files options))))
+    (let [main-files (find-main-files source-paths options)]
+      (compile-sass main-files options))))
 
 (defn start [options]
   (build (assoc options :auto true)))
