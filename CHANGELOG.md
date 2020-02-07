@@ -1,3 +1,10 @@
+## 0.5.1 (2020-02-07)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.0...0.5.1)**
+
+- Fix `:source-paths` not being passed to compile file, so files
+from another source-paths folder couldn't be imported. ([#31](https://github.com/Deraen/sass4clj/pull/31/))
+
 ## 0.5.0 (2019-10-03)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.4.1...0.5.0)**
