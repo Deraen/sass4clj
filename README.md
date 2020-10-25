@@ -2,8 +2,6 @@
 [![Clojars Project](https://img.shields.io/clojars/v/deraen/sass4clj.svg)](https://clojars.org/deraen/sass4clj)
 [![Build Status](https://travis-ci.org/Deraen/sass4clj.svg?branch=master)](https://travis-ci.org/Deraen/sass4clj)
 [![AppVeyor](https://img.shields.io/appveyor/ci/deraen/sass4clj.svg?maxAge=2592000&label=windows)](https://ci.appveyor.com/project/Deraen/sass4clj)
-[![Downloads](https://jarkeeper.com/deraen/sass4clj/downloads.svg)](https://jarkeeper.com/deraen/sass4clj)
-[![Dependencies Status](https://jarkeeper.com/deraen/sass4clj/status.svg)](https://jarkeeper.com/deraen/sass4clj)
 
 Clojure wrapper for [jsass](https://github.com/bit3/jsass/) JNA wrapper for Libsass.
 This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http://leiningen.org/) tasks.
@@ -20,14 +18,14 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 - Assumes that files starting with `_` are [partial files](http://sass-lang.com/guide) and should not be compiled into CSS files.
 
-## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads](https://jarkeeper.com/deraen/boot-sass/downloads.svg)](https://jarkeeper.com/deraen/boot-sass)
+## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass) [![Downloads]
 
 * Provides the `sass` task (`deraen.boot-sass/sass`)
 * Select main files using `inputs` option
 * or, for each `.sass` or `.scss` file not starting with `_` in the fileset creates equivalent `.css` file.
 * Check `boot sass --help` for task options.
 
-## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads](https://jarkeeper.com/deraen/lein-sass4clj/downloads.svg)](https://jarkeeper.com/deraen/lein-sass4clj)
+## Leiningen [![Clojars Project](https://img.shields.io/clojars/v/deraen/lein-sass4clj.svg)](https://clojars.org/deraen/lein-sass4clj) [![Downloads]
 
 * Provides the `sass4clj` task
 * Select main files using `inputs` option
