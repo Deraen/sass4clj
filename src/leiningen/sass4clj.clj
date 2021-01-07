@@ -23,7 +23,14 @@
   [project options]
   (leval/eval-in-project
     (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
-    `(sass4clj.api/build ~options)
+    `(try
+       (sass4clj.api/build ~options)
+       (catch Exception e#
+         (if (= :sass4clj.core/error (:type (ex-data e#)))
+           (do
+             (println (.getMessage e#))
+             (System/exit 1))
+           (throw e#))))
     '(require 'sass4clj.api)))
 
 ;; For docstrings

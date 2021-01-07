@@ -1,3 +1,9 @@
+## 0.5.2 (2021-01-07)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.1...0.5.2)**
+
+- Set exit code in `-main` and Lein plugin if errors occured
+
 ## 0.5.1 (2020-02-07)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.0...0.5.1)**

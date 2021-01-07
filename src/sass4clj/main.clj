@@ -54,6 +54,15 @@ Config file options are merged over the default options, before CLI options."))
                        config-file
                        (dissoc options :config))]
     (cond
-      errors (println (str/join "\n" errors))
+      errors (do
+               (println (str/join "\n" errors))
+               (System/exit (count errors)))
       help (println (help-text summary))
-      :else (api/build options))))
+      :else (try
+              (api/build options)
+              (catch Exception e
+                (if (= :sass4clj.core/error (:type (ex-data e)))
+                  (do
+                    (println (.getMessage e))
+                    (System/exit 1))
+                  (throw e)))))))

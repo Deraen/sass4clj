@@ -31,25 +31,20 @@
                                  (str " at line " (:line warning) " character " (:char warning)))))))))
 
 (defn compile-sass [main-files {:keys [auto target-path] :as options}]
-  (try
-    (doseq [[path relative-path] main-files]
-      (println (format "Compiling {sass}... %s" relative-path))
-      (let [result
-            (try
-              (core/sass-compile-to-file
-                path
-                (.getPath (io/file target-path (string/replace relative-path #"\.(scss|sass)$" ".css")))
-                (dissoc options :target-path))
-              (catch Exception e
-                (if auto
-                  (println (.getMessage e))
-                  (throw e))))]
-        (doseq [warning (:warnings result)]
-          (print-warning warning))))
-    (catch Exception e
-      (if (= :sass4clj.core/error (:type (ex-data e)))
-        (println (.getMessage e))
-        (throw e)))))
+  (doseq [[path relative-path] main-files]
+    (println (format "Compiling {sass}... %s" relative-path))
+    (let [result
+          (try
+            (core/sass-compile-to-file
+              path
+              (.getPath (io/file target-path (string/replace relative-path #"\.(scss|sass)$" ".css")))
+              (dissoc options :target-path))
+            (catch Exception e
+              (if auto
+                (println (.getMessage e))
+                (throw e))))]
+      (doseq [warning (:warnings result)]
+        (print-warning warning)))))
 
 (s/def ::source-paths (s/coll-of string? :into vec))
 (s/def ::inputs (s/coll-of string? :into vec))
