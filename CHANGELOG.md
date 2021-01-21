@@ -1,3 +1,10 @@
+## 0.5.3 (2021-01-21)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.2...0.5.3)**
+
+- Read imports from other source-paths before the classpath
+- Print resolved imports on debug log
+
 ## 0.5.2 (2021-01-07)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.1...0.5.2)**

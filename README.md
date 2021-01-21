@@ -45,6 +45,7 @@ Check `clj -m sass4clj.main --help` for options.
 Loading order for `@import "{name}";` on file at `{path}`
 
 1. Local file at `{path}/{name}.sass` or `{path}/{name}.scss`
+2. Local files on other source-paths, `{source-path}/{name}.ext`
 2. Classpath resource `(io/resource "{name}.ext")`
 3. Classpath resource `(io/resource "{path}/{name}.ext")`
 4. Webjar asset
