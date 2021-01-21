@@ -103,6 +103,9 @@
         ; (util/info "Names: %s\n" names)
         (when-let [[found-absolute-uri uri]
                    (or (find-local-file names parent)
+                       (some (fn [source-path]
+                               (find-local-file names source-path))
+                             (:source-paths ctx))
                        (find-resource names)
                        (find-resource (map #(join-url parent %) names))
                        (find-webjars ctx names))]
@@ -151,12 +154,13 @@
    Options:
    - :source-map-path - Enables source-maps and uses this URL for
      sourceMappingURL. Relative to css file."
-  [input {:keys [verbosity source-map]
+  [input {:keys [verbosity source-map source-paths]
           :or {verbosity 1}
           :as options}]
   (binding [util/*verbosity* verbosity]
     (try
-      (let [ctx {:asset-map (webjars/asset-map)}
+      (let [ctx {:asset-map (webjars/asset-map)
+                 :source-paths source-paths}
             compiler (io.bit3.jsass.Compiler.)
             opts (build-options options)
             _ (doto (.getImporters opts)
