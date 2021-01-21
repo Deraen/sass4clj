@@ -59,7 +59,6 @@
 (defn find-webjars [ctx names]
   (some (fn [name]
           (when-let [path (get (:asset-map ctx) name)]
-            (util/dbug "found %s at webjars\n" path)
             (find-resource [path])))
         names))
 
@@ -94,12 +93,9 @@
   (reify
     Importer
     (^Collection apply [this ^String import-url ^Import prev]
-      ; (util/info "Import: %s\n" import-url)
-      ; (util/info "Prev name: %s %s\n" (.getAbsoluteUri prev) (.getImportUri prev))
       (let [;; Generates different possibilies of names with _ and extensions added
             names (possible-names import-url)
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
-        ; (util/info "Parent: %s\n" parent)
         ; (util/info "Names: %s\n" names)
         (when-let [[found-absolute-uri uri]
                    (or (find-local-file names parent)
@@ -109,7 +105,10 @@
                        (find-resource names)
                        (find-resource (map #(join-url parent %) names))
                        (find-webjars ctx names))]
-          ; (util/info "Import: %s, %s, result: %s\n" import-url uri found-absolute-uri)
+          (util/dbug "Import: %s (from %s), result: %s\n"
+                     import-url
+                     (.getAbsoluteUri prev)
+                     uri)
           ; jsass doesn't know how to read content from other than files?
           ;; FIXME: If extension is sass, should convert the content to scss
           (Collections/singletonList
