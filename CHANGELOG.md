@@ -1,3 +1,9 @@
+## 0.5.4 (2021-02-19)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.3...0.5.4)**
+
+- Fix lein plugin when `:source-paths` is merged from multiple lein profiles
+
 ## 0.5.3 (2021-01-21)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.2...0.5.3)**
