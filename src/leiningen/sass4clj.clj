@@ -1,10 +1,8 @@
 (ns leiningen.sass4clj
-  (:require [leiningen.help]
+  (:require [leiningen.help :as help]
             [leiningen.core.eval :as leval]
             [leiningen.core.project :as project]
             [leiningen.core.main :as main]
-            [leiningen.help :as help]
-            [clojure.java.io :as io]
             [leiningen.sass4clj.version :refer [+version+]]))
 
 (def sass4j-profile {:dependencies [['hawk "0.2.11"]
@@ -21,17 +19,22 @@
 (defn- run-compiler
   "Run the sasscss compiler."
   [project options]
-  (leval/eval-in-project
-    (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
-    `(try
-       (sass4clj.api/build ~options)
-       (catch Exception e#
-         (if (= :sass4clj.core/error (:type (ex-data e#)))
-           (do
-             (println (.getMessage e#))
-             (System/exit 1))
-           (throw e#))))
-    '(require 'sass4clj.api)))
+  ;; Cast :source-paths to vector, in case Lein profile merge has combined
+  ;; source-paths using concat, as list would break eval.
+  ;; Not sure if there is better way handle this?
+  (let [options (cond-> options
+                  (contains? options :source-paths) (update :source-paths vec))]
+    (leval/eval-in-project
+      (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
+      `(try
+         (sass4clj.api/build ~options)
+         (catch Exception e#
+           (if (= :sass4clj.core/error (:type (ex-data e#)))
+             (do
+               (println (.getMessage e#))
+               (System/exit 1))
+             (throw e#))))
+      '(require 'sass4clj.api))))
 
 ;; For docstrings
 
