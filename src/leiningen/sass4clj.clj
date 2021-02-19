@@ -19,22 +19,19 @@
 (defn- run-compiler
   "Run the sasscss compiler."
   [project options]
-  ;; Cast :source-paths to vector, in case Lein profile merge has combined
-  ;; source-paths using concat, as list would break eval.
-  ;; Not sure if there is better way handle this?
-  (let [options (cond-> options
-                  (contains? options :source-paths) (update :source-paths vec))]
-    (leval/eval-in-project
-      (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
-      `(try
-         (sass4clj.api/build ~options)
-         (catch Exception e#
-           (if (= :sass4clj.core/error (:type (ex-data e#)))
-             (do
-               (println (.getMessage e#))
-               (System/exit 1))
-             (throw e#))))
-      '(require 'sass4clj.api))))
+  (leval/eval-in-project
+    (remove-prep-tasks (project/merge-profiles project [sass4j-profile]))
+    `(try
+       ;; Quote the options, e.g. :source-paths could be a list after
+       ;; lein profile merge.
+       (sass4clj.api/build '~options)
+       (catch Exception e#
+         (if (= :sass4clj.core/error (:type (ex-data e#)))
+           (do
+             (println (.getMessage e#))
+             (System/exit 1))
+           (throw e#))))
+    '(require 'sass4clj.api)))
 
 ;; For docstrings
 
