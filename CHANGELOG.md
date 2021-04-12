@@ -1,3 +1,12 @@
+## 0.5.5 (2021-04-12)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.4...0.5.5)**
+
+- Fix @import load order for classpath relative paths being shadowed.
+    -  Files in :source-paths could be selected before correct file from
+    relative path in the classpath. E.g. local `_icons.scss` before one in
+    material-design-iconic-font.
+
 ## 0.5.4 (2021-02-19)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.3...0.5.4)**
