@@ -98,12 +98,15 @@
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
         ; (util/info "Names: %s\n" names)
         (when-let [[found-absolute-uri uri]
-                   (or (find-local-file names parent)
+                   (or ;; First try paths relative to the file where @import is used
+                       (find-local-file names parent)
+                       (find-resource (map #(join-url parent %) names))
+
+                       ;; Then other paths
                        (some (fn [source-path]
                                (find-local-file names source-path))
                              (:source-paths ctx))
                        (find-resource names)
-                       (find-resource (map #(join-url parent %) names))
                        (find-webjars ctx names))]
           (util/dbug "Import: %s (from %s), result: %s\n"
                      import-url

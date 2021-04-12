@@ -22,6 +22,7 @@
 
                     ;; For testing the webjars asset locator implementation
                     [org.webjars.bower/bootstrap "4.3.1" :scope "test"]
+                    [org.webjars.bower/material-design-iconic-font "2.2.0" :scope "test"]
                     [org.webjars.bower/material-design-lite "1.3.0" :scope "test"]])
 
 (require '[metosin.bat-test :refer [bat-test]])

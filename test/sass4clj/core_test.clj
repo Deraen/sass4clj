@@ -171,3 +171,8 @@ h1 {
 (deftest sass-compile-warning
   (is (= nil
          (first (:warnings (sass-compile warning-file {}))))))
+
+(deftest compile-material-design-iconic-font-test
+  (is (:output (sass-compile (io/file "test-resources/material-icons-test.scss")
+                             {:verbosity 6
+                              :source-paths ["test-resources"]}))))
