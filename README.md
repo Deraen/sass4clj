@@ -8,6 +8,12 @@ This repository also contains [Boot](http://boot-clj.com/) and [Leiningen](http:
 
 For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 
+## ATTENTION: [libsass](https://sass-lang.com/blog/libsass-is-deprecated) (the C library) and the JNA wrapper library [jsass](https://github.com/bit3/jsass/) are deprecated.
+## Consider using [Dart Sass](https://sass-lang.com/dart-sass) if you do not need to read SCSS files from the Java classpath.
+
+Both sass4clj still works and will receive bug fixes, but difference
+between libsass and dart-sass will continue growing.
+
 ## Features
 
 - Jsass features
