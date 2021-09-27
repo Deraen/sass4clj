@@ -10,13 +10,13 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 
 ## ATTENTION: [libsass](https://sass-lang.com/blog/libsass-is-deprecated) (the C library) and the JNA wrapper library [jsass](https://github.com/bit3/jsass/) are deprecated. Consider using [Dart Sass](https://sass-lang.com/dart-sass) if you do not need to read SCSS files from the Java classpath.
 
-Both sass4clj still works and will receive bug fixes, but difference
+Both sass4clj still works and will receive bug fixes, but the difference
 between libsass and dart-sass will continue growing.
 
-Some ideas if you need to read read files from the classpath or jar files:
+Some ideas if you need to read files from the classpath or jar files:
 
 - It might be possible to extend dart-sass through [Importer API](https://pub.dev/documentation/sass/latest/sass/Importer-class.html)
-- Just extract files from the jar files in a script before calling dart-sass compile (for example using `clj` and `unzip`)
+- Extract files from the jar files in a script before calling dart-sass compile (for example, using `clj` and `unzip`)
 
 ## Features
 
@@ -64,9 +64,45 @@ Loading order for `@import "{name}";` on file at `{path}`
 
 ## FAQ
 
+### Shadow-cljs integration
+
+If you want to combine Cljs combination with Shadow CLJS and Sass compilation,
+you can create your function which starts both watches and run this using
+shadow-cljs [clj-run](https://shadow-cljs.github.io/docs/UsersGuide.html#_calling_watch_via_clj_run)
+task.
+
+```clj
+(ns app.shadow
+  (:require [shadow.cljs.devtools.api :as shadow]
+            [sass4clj.api :as sass]
+            [clojure.edn :as edn]))
+
+(defn watch
+  {:shadow/requires-server true}
+  [& _args]
+  ;; Sass compilation probably starts faster.
+  ;; Both watches keep running until ctrl-c.
+  (sass/start (-> (edn/read-string (slurp "sass4clj.edn"))
+                  (assoc :target-path "target/dev/public/css")))
+  (shadow/watch :app))
+```
+
+> The configuration file, sass4clj.edn, is also supported by sass4clj.main
+> namespace. You could use that to compile CSS for your production build
+> instead of the leiningen plugin.
+
+And start the watch with (or with whatever tool you are using):
+
+```
+lein run -m shadow.cljs.devtools.cli clj-run app.shadow/watch
+```
+
+You need to ensure that the classpath used by shadow-cljs contains `deraen/sass4clj`
+and any packages where you are importing sass files from.
+
 ### Log configuration
 
-If you don't have any slf4j implementations you will see a warning:
+If you don't have any slf4j implementations, you will see a warning:
 
 ```
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
@@ -74,9 +110,9 @@ SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
 ```
 
-To disable this add a no operation logger to your project. As this is only required
-on build phase, you can use `:scope "test"` so that the dependency is not
-transitive and is not included in uberjar. Alternatively you can add this
+To disable this, add a no operation logger to your project. As this is only required
+on the build phase, you can use `:scope "test"` so that the dependency is not
+transitive and is not included in Uberjar. Alternatively, you can add this
 dependency to your Leiningen dev profile.
 
 ```
@@ -85,6 +121,6 @@ dependency to your Leiningen dev profile.
 
 ## License
 
-Copyright © 2014-2017 Juho Teperi
+Copyright © 2014-2021 Juho Teperi
 
 Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
