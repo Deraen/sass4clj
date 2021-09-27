@@ -13,6 +13,11 @@ For parallel Less library check [less4clj](https://github.com/Deraen/less4clj)
 Both sass4clj still works and will receive bug fixes, but difference
 between libsass and dart-sass will continue growing.
 
+Some ideas if you need to read read files from the classpath or jar files:
+
+- It might be possible to extend dart-sass through [Importer API](https://pub.dev/documentation/sass/latest/sass/Importer-class.html)
+- Just extract files from the jar files in a script before calling dart-sass compile (for example using `clj` and `unzip`)
+
 ## Features
 
 - Jsass features
