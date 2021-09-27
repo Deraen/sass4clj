@@ -68,7 +68,7 @@ Loading order for `@import "{name}";` on file at `{path}`
 
 ### Shadow-cljs integration
 
-If you want to combine Cljs combination with Shadow CLJS and Sass compilation,
+If you want to combine CLJS compilation with Shadow CLJS and Sass compilation,
 you can create your function which starts both watches and run this using
 shadow-cljs [clj-run](https://shadow-cljs.github.io/docs/UsersGuide.html#_calling_watch_via_clj_run)
 task.
