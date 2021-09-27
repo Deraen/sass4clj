@@ -27,6 +27,8 @@ Some ideas if you need to read files from the classpath or jar files:
 - Load imports directly from Java classpath (e.g. Webjars)
     - Add dependency `[org.webjars.bower/bootstrap "4.0.0-alpha"]` to use [Bootstrap](http://getbootstrap.com/)
 - Assumes that files starting with `_` are [partial files](http://sass-lang.com/guide) and should not be compiled into CSS files.
+- Non feature: compilation warnings are reported by libsass/jsass directly to stdout,
+and aren't accessible from sass4clj API.
 
 ## Boot [![Clojars Project](https://img.shields.io/clojars/v/deraen/boot-sass.svg)](https://clojars.org/deraen/boot-sass)
 

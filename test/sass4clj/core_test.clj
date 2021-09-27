@@ -165,6 +165,7 @@ h1 {
                 :formatted "Error: Invalid CSS after \"f\": expected 1 selector or at-rule, was \"foosdfsdf%;\"\n        on line 1:1 of stdin\n>> foosdfsdf%;\n   ^\n"
                 :type :sass4clj.core/error} error))))))
 
+;; Warnings not implmented because jsass doesn't return them in useful format.
 (def warning-file (doto (File/createTempFile "sass4clj" "warning-test.scss")
                     (spit "@warn \"test\";")))
 

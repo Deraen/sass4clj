@@ -22,6 +22,7 @@
                    (map (fn [x] [(.getPath x) (.toString (.relativize (.toURI file) (.toURI x)))])))))
           source-paths))
 
+;; Unused
 (defn print-warning [warning]
   (println (format "WARN: %s %s\n" (:message warning)
                    (str (if (:uri (:source warning))
@@ -43,6 +44,8 @@
               (if auto
                 (println (.getMessage e))
                 (throw e))))]
+      ;; FIXME: core doesn't set :warnings because jsass doesn't return them in useful format,
+      ;; this is never called.
       (doseq [warning (:warnings result)]
         (print-warning warning)))))
 
