@@ -1,3 +1,10 @@
+## 0.6.0 (2024-04-10)
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.5.5...0.6.0)**
+
+- Update to latest jsass
+  - Supports Apple Silicon
+
 ## 0.5.5 (2021-04-12)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.4...0.5.5)**

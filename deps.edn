@@ -1,4 +1,4 @@
-{:deps {io.bit3/jsass {:mvn/version "5.10.3"}
+{:deps {io.bit3/jsass {:mvn/version "5.11.0"}
         cheshire/cheshire {:mvn/version "5.9.0"}
         org.webjars/webjars-locator {:mvn/version "0.37"}
         hawk/hawk {:mvn/version "0.2.11"}

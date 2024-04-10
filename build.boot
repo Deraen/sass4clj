@@ -1,4 +1,4 @@
-(def +version+ "0.5.5")
+(def +version+ "0.6.0")
 
 (set-env!
   :resource-paths #{"src"}
@@ -6,7 +6,7 @@
   :dependencies   '[[org.clojure/clojure "1.10.1" :scope "provided"]
                     [metosin/bat-test "0.4.3" :scope "test"]
 
-                    [io.bit3/jsass "5.10.3"]
+                    [io.bit3/jsass "5.11.0"]
                     [cheshire "5.9.0"]
 
                     [org.webjars/webjars-locator "0.37"]
