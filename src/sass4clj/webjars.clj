@@ -1,12 +1,11 @@
 (ns sass4clj.webjars
-  (:import [java.io File]
-           [org.webjars WebJarAssetLocator]))
+  (:import [org.webjars WebJarAssetLocator]))
 
 (def ^:private webjars-pattern
   #"META-INF/resources/webjars/([^/]+)/([^/]+)/(.*)")
 
 (defn- asset-path [resource]
-  (let [[_ name version path] (re-matches webjars-pattern resource)]
+  (let [[_ name _version path] (re-matches webjars-pattern resource)]
     (str name "/" path)))
 
 (defn asset-map

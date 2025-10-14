@@ -25,10 +25,10 @@
 ;; Unused
 (defn print-warning [warning]
   (println (format "WARN: %s %s\n" (:message warning)
-                   (str (if (:uri (:source warning))
+                   (str (when (:uri (:source warning))
                           (str "on file "
                                (:uri (:source warning))
-                               (if (:line warning)
+                               (when (:line warning)
                                  (str " at line " (:line warning) " character " (:char warning)))))))))
 
 (defn compile-sass [main-files {:keys [auto target-path] :as options}]
@@ -74,5 +74,5 @@
   (build (assoc options :auto true)))
 
 (defn stop [this]
-  (if this
+  (when this
     (watcher/stop this)))

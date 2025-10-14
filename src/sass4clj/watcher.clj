@@ -4,7 +4,7 @@
 (defn start [source-paths f]
   (f)
   (let [watcher (apply beholder/watch
-                       (fn [{:keys [_type path] :as e}]
+                       (fn [{:keys [_type path]}]
                          (let [fname (.toString (.getFileName path))]
                            (when (and (not (.startsWith fname "."))
                                       (or (.endsWith fname ".scss")

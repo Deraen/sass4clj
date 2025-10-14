@@ -8,14 +8,14 @@
   (:import
     [java.net URI]
     [java.util Collection Collections]
-    [io.bit3.jsass CompilationException Options Output OutputStyle Sass2ScssOptions]
+    [io.bit3.jsass CompilationException Options OutputStyle Sass2ScssOptions]
     [io.bit3.jsass.importer Import Importer]))
 
 (defn find-local-file [names current-dir]
   (some
     (fn [name]
       (let [f (io/file current-dir name)]
-        (if (.exists f)
+        (when (.exists f)
           [(.getPath f) f])))
     names))
 
@@ -44,7 +44,7 @@
 
 (defn find-resource [names]
   (some (fn [name]
-          (if-let [url (io/resource name)]
+          (when-let [url (io/resource name)]
             (case (.getProtocol url)
               "file"
               [(.toString url) url]
@@ -92,7 +92,7 @@
 (defn custom-sass-importer [ctx]
   (reify
     Importer
-    (^Collection apply [this ^String import-url ^Import prev]
+    (^Collection apply [_this ^String import-url ^Import prev]
       (let [;; Generates different possibilies of names with _ and extensions added
             names (possible-names import-url)
             [_ parent] (re-find #"(.*)/([^/]*)$" (str (.getAbsoluteUri prev)))]
