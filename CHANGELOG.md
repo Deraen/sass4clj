@@ -1,4 +1,4 @@
-## 0.7.0
+## 0.7.0 (2025-10-14)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.6.0...0.7.0)**
 
