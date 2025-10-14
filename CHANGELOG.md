@@ -1,3 +1,12 @@
+## 0.7.0
+
+**[compare](https://github.com/Deraen/sass4clj/compare/0.6.0...0.7.0)**
+
+- Use Beholder for change watching, should support Apple Silicon
+  - Note: will trigger re-compile only when the file content really changes,
+    not when changing the file without changes. Change event throttle was
+    also removed, as it isn't needed when only real changes trigger compile.
+
 ## 0.6.0 (2024-04-10)
 
 **[compare](https://github.com/Deraen/sass4clj/compare/0.5.5...0.6.0)**
@@ -62,7 +71,7 @@ from another source-paths folder couldn't be imported. ([#31](https://github.com
 - Sass4clj new has `sass4clj.api` namespace with easy to use `start` and `stop` functions
 - Add [Integrant](https://github.com/weavejester/integrant) namespace `sass4clj.integrant` namespace
 - Add [Component](https://github.com/stuartsierra/component) namespace `sass4clj.component` namespace
-- Use [Hawk](https://github.com/wkf/hawk/) for watching for file changes, this should work better on OS X
+- Uses [Beholder](https://github.com/nextjournal/beholder) for watching for file changes, this should work better on OS X
 - Support Webpack style import paths, which support starting the path with `~`
 when referring to Node packages.
 - Add `inputs` option which can be used to select main files

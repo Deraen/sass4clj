@@ -5,7 +5,7 @@
             [leiningen.core.main :as main]
             [leiningen.sass4clj.version :refer [+version+]]))
 
-(def sass4j-profile {:dependencies [['hawk "0.2.11"]
+(def sass4j-profile {:dependencies [['com.nextjournal/beholder "1.0.3"]
                                     ['deraen/sass4clj +version+]]})
 
 (defn- remove-prep-tasks

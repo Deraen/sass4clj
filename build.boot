@@ -1,4 +1,4 @@
-(def +version+ "0.6.0")
+(def +version+ "0.7.0-SNAPSHOT")
 
 (set-env!
   :resource-paths #{"src"}
@@ -10,7 +10,7 @@
                     [cheshire "5.9.0"]
 
                     [org.webjars/webjars-locator "0.37"]
-                    [hawk "0.2.11"]
+                    [com.nextjournal/beholder "1.0.3"]
                     [org.clojure/tools.cli "0.4.2"]
 
                     [com.stuartsierra/component "0.4.0" :scope "test"]
@@ -107,7 +107,7 @@
 (deftask deploy []
   (comp
    (build)
-   (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
+   (push :repo "clojars" :gpg-sign false)))
 
 (ns-unmap *ns* 'test)
 
